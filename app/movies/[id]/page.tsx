@@ -21,7 +21,7 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
     if (isNaN(id)) notFound();
 
     // 1. Try local DB first
-    const localMovie = getMovieById(id);
+    const localMovie = await getMovieById(id);
 
     // 2. Determine TMDB fetch parameters
     let tmdbId = localMovie?.tmdb_id || null;
@@ -85,14 +85,14 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
 
 
     // 5. User Data
-    const reviews = localMovie ? getReviewsByMovieId(localMovie.id) : [];
+    const reviews = localMovie ? await getReviewsByMovieId(localMovie.id) : [];
     const session = await auth();
-    const userId = session?.user ? parseInt((session.user as { id: string }).id) : null;
-    const existingReview = (userId && localMovie) ? getReviewByUserAndMovie(userId, localMovie.id) : null;
-    const isSaved = (userId && localMovie) ? isInWatchlist(userId, localMovie.id) : false;
+    const userId = session?.user ? (session.user as { id: string }).id : null;
+    const existingReview = (userId && localMovie) ? await getReviewByUserAndMovie(userId, localMovie.id) : null;
+    const isSaved = (userId && localMovie) ? await isInWatchlist(userId, localMovie.id) : false;
 
     const ratingCounts = { disaster: 0, timepass: 0, go_for_it: 0, perfection: 0 };
-    for (const r of reviews) ratingCounts[r.meter_rating]++;
+    for (const r of reviews) ratingCounts[r.meter_rating as keyof typeof ratingCounts]++;
 
     return (
         <div className="min-h-screen bg-black overflow-x-hidden">

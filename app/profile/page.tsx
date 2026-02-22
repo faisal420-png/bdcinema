@@ -11,8 +11,8 @@ export default async function ProfileDashboard() {
         redirect('/login');
     }
 
-    const userId = parseInt((session.user as { id: string }).id);
-    const reviews = getUserReviews(userId);
+    const userId = (session.user as { id: string }).id;
+    const reviews = await getUserReviews(userId);
 
     const userInfo = {
         name: session.user.name || '',

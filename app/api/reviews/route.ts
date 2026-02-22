@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Invalid rating.' }, { status: 400 });
         }
 
-        const userId = parseInt((session.user as { id: string }).id);
+        const userId = (session.user as { id: string }).id;
 
         let targetMovieId = parseInt(movieId);
 
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
             }
 
             // Check if it was synced recently by someone else
-            const existingLocal = getMovieByTmdbId(tmdbId);
+            const existingLocal = await getMovieByTmdbId(tmdbId);
             if (existingLocal) {
                 targetMovieId = existingLocal.id;
             } else {
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
                     const t = tmdbData as any;
                     if (t.genres && Array.isArray(t.genres)) genres = t.genres.map((g: any) => g.name);
 
-                    const newLocalId = upsertTmdbMovie({
+                    const newLocalMovie = await upsertTmdbMovie({
                         tmdb_id: tmdbData.id,
                         title: tmdbData.title || tmdbData.name || 'Unknown',
                         original_title: tmdbData.original_title || tmdbData.original_name || null,
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
                         genres: JSON.stringify(genres),
                     });
 
-                    targetMovieId = newLocalId.id;
+                    targetMovieId = newLocalMovie.id;
                 } catch (e) {
                     console.error('Failed to sync TMDB movie:', e);
                     return NextResponse.json({ error: 'Failed to sync title data.' }, { status: 500 });
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
             }
         }
 
-        createReview(targetMovieId, userId, meterRating, body || '');
+        await createReview(targetMovieId, userId, meterRating, body || '');
 
         return NextResponse.json({ success: true }, { status: 201 });
     } catch (err) {

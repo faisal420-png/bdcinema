@@ -3,7 +3,7 @@ import { auth } from '@/lib/auth';
 import { getAllMovies, createMovie, deleteMovie } from '@/lib/db';
 
 export async function GET() {
-    const movies = getAllMovies();
+    const movies = await getAllMovies();
     return NextResponse.json(movies);
 }
 
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     }
 
     const data = await req.json();
-    const result = createMovie({
+    const result = await createMovie({
         tmdb_id: null,
         title: data.title,
         original_title: data.original_title || null,
@@ -39,6 +39,6 @@ export async function DELETE(req: NextRequest) {
     }
 
     const { id } = await req.json();
-    deleteMovie(parseInt(id));
+    await deleteMovie(parseInt(id));
     return NextResponse.json({ success: true });
 }

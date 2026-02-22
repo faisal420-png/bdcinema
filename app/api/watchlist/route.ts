@@ -15,7 +15,7 @@ export async function POST(request: Request) {
             return new NextResponse('Invalid movie ID', { status: 400 });
         }
 
-        toggleWatchlist(parseInt(session.user.id), movieId);
+        await toggleWatchlist(session.user.id, movieId);
 
         return NextResponse.json({ success: true });
     } catch {

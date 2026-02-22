@@ -3,8 +3,8 @@ import { MovieCard } from '@/components/MovieCard';
 
 export const dynamic = 'force-dynamic';
 
-export default function MoviesPage() {
-    const movies = getAllMovies();
+export default async function MoviesPage() {
+    const movies = await getAllMovies();
     const allMovies = movies.filter(m => m.type === 'movie');
     const allSeries = movies.filter(m => m.type === 'series');
 
