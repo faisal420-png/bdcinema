@@ -2,31 +2,9 @@
 
 import { motion } from 'framer-motion';
 
-type Review = {
-    id: number;
-    movie_id: number;
-    user_id: number;
-    meter_rating: 'disaster' | 'timepass' | 'go_for_it' | 'perfection';
-    body: string | null;
-    created_at: string;
-};
+import type { Review, Movie } from '@prisma/client';
 
-type Movie = {
-    id: number;
-    tmdb_id: number | null;
-    title: string;
-    original_title: string | null;
-    overview: string | null;
-    release_year: number | null;
-    poster_url: string | null;
-    backdrop_url: string | null;
-    type: 'movie' | 'series';
-    source: 'tmdb' | 'custom';
-    genres: string;
-    created_at: string;
-};
-
-type ReviewWithMovie = Review & { movie: Movie };
+export type ReviewWithMovie = Review & { movie: Movie };
 
 type ProfileProps = {
     user: { name: string; email: string; created_at?: string };

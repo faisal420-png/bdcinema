@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { Movie } from '@/lib/db';
+
 import type { ReviewWithUser } from '@/lib/db';
 import { MeterRating, type MeterRatingValue } from '@/components/MeterRating';
 

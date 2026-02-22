@@ -305,7 +305,7 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
                                                     </p>
                                                 </div>
                                             </div>
-                                            <MeterBadge rating={review.meter_rating} />
+                                            <MeterBadge rating={review.meter_rating as MeterRatingValue} />
                                         </div>
                                         {review.body && (
                                             <p className="text-white/70 text-sm leading-relaxed border-l-2 border-white/20 pl-6 py-2 italic font-medium">"{review.body}"</p>

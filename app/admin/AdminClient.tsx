@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { GlitchText } from '@/components/GlitchText';
 import { motion } from 'framer-motion';
-import type { Movie } from '@/lib/db';
+import type { Movie } from '@prisma/client';
 
 interface MovieRow extends Movie {
     review_count?: number;

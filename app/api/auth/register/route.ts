@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Password must be at least 6 characters.' }, { status: 400 });
         }
 
-        const existing = getUserByEmail(email);
+        const existing = await getUserByEmail(email);
         if (existing) {
             return NextResponse.json({ error: 'Email already registered.' }, { status: 409 });
         }
