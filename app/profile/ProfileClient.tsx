@@ -100,7 +100,7 @@ export default function ProfileClient({ user, reviews, children }: ProfileProps)
                                 <div className="flex-1 lg:flex-initial flex flex-col justify-center mt-2">
                                     <div className="flex justify-center sm:justify-start">
                                         <span className={`inline-block px-3 py-1 mb-4 rounded-md bg-white/5 border border-white/10 text-[9px] font-black tracking-[0.4em] text-white/60 uppercase shadow-inner`}>
-                                            Operative Dashboard
+                                            Critic Dashboard
                                         </span>
                                     </div>
                                     <h1 className="text-5xl sm:text-7xl font-black text-white tracking-tighter uppercase leading-[0.9] drop-shadow-2xl">
@@ -165,7 +165,7 @@ export default function ProfileClient({ user, reviews, children }: ProfileProps)
                             <div className="bg-black/50 backdrop-blur-xl rounded-[1.5rem] p-6 border border-white/5 shadow-inner hover:bg-white/[0.02] hover:border-white/20 transition-all duration-300 relative overflow-hidden group/card text-center md:text-left">
                                 <div className="absolute inset-0 bg-gradient-to-br from-[#39ff14]/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                                 <span className="flex items-center justify-center md:justify-start gap-2 text-[10px] font-black text-[#39ff14] uppercase tracking-[0.3em] mb-4">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#39ff14]/50 shadow-[0_0_5px_currentColor]"></span> Clearance Date
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#39ff14]/50 shadow-[0_0_5px_currentColor]"></span> Member Since
                                 </span>
                                 <span className="text-4xl font-black text-white tracking-tight leading-none mt-1 inline-block">{memberSince}</span>
                             </div>

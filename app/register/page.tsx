@@ -44,11 +44,11 @@ export default function RegisterPage() {
                     <div className="h-px w-0 group-hover:w-full bg-white transition-all duration-500 mt-1" />
                 </Link>
 
-                <h2 className="text-xl font-bold uppercase tracking-[0.2em] text-white/50 mb-8">Establish Identity</h2>
+                <h2 className="text-xl font-bold uppercase tracking-[0.2em] text-white/50 mb-8">Join the Audience</h2>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label className="block text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase mb-2 ml-1">Screen Name</label>
+                        <label className="block text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase mb-2 ml-1">Full Name</label>
                         <input name="name" required
                             className="w-full bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-2xl text-white px-5 py-4 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all duration-500 placeholder:text-white/20"
                             placeholder="John Doe"
@@ -62,7 +62,7 @@ export default function RegisterPage() {
                         />
                     </div>
                     <div>
-                        <label className="block text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase mb-2 ml-1">Secure Key</label>
+                        <label className="block text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase mb-2 ml-1">Password</label>
                         <input name="password" type="password" required minLength={6}
                             className="w-full bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-2xl text-white px-5 py-4 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all duration-500 placeholder:text-white/20"
                             placeholder="••••••••"
@@ -70,13 +70,13 @@ export default function RegisterPage() {
                     </div>
                     <button type="submit"
                         className="w-full mt-8 py-4 rounded-full bg-white text-black font-black uppercase tracking-[0.3em] text-xs shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-[1.02] active:scale-[0.98] hover:bg-neutral-300 transition-all duration-300">
-                        Initialize Profile
+                        Get Ticket
                     </button>
                 </form>
 
                 <div className="mt-8 pt-8 border-t border-white/10 text-center">
                     <p className="text-[10px] text-white/40 uppercase tracking-[0.2em]">
-                        Existing operative? <Link href="/login" className="text-white hover:underline ms-2">Authenticate</Link>
+                        Already have a ticket? <Link href="/login" className="text-white hover:underline ms-2">Sign In</Link>
                     </p>
                 </div>
             </div>

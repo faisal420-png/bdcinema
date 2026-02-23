@@ -66,7 +66,7 @@ export default function LoginPage() {
                     <div className="h-px w-0 group-hover:w-full bg-white transition-all duration-500 mt-1" />
                 </Link>
 
-                <h2 className="text-xl font-bold uppercase tracking-[0.2em] text-white/50 mb-8">Authenticate</h2>
+                <h2 className="text-xl font-bold uppercase tracking-[0.2em] text-white/50 mb-8">Sign In</h2>
 
                 {/* Secure Sign In with Google */}
                 <button
@@ -90,29 +90,31 @@ export default function LoginPage() {
 
                 <div className="relative flex items-center mb-8">
                     <div className="flex-grow border-t border-white/10" />
-                    <span className="flex-shrink-0 mx-4 text-white/30 text-xs font-semibold tracking-widest uppercase">Or Operative Manual</span>
+                    <span className="flex-shrink-0 mx-4 text-white/30 text-xs font-semibold tracking-widest uppercase">Or Continue with Email</span>
                     <div className="flex-grow border-t border-white/10" />
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
+                        <label className="block text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase mb-2 ml-1">Email Address</label>
                         <input
                             type="email"
                             name="email"
                             required
                             disabled={isLoading || isGoogleLoading}
                             className="w-full bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-2xl text-white px-5 py-4 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all duration-500 placeholder:text-white/20 disabled:opacity-50"
-                            placeholder="Operative Designation (Email)"
+                            placeholder="user@example.com"
                         />
                     </div>
                     <div>
+                        <label className="block text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase mb-2 ml-1">Password</label>
                         <input
                             type="password"
                             name="password"
                             required
                             disabled={isLoading || isGoogleLoading}
                             className="w-full bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-2xl text-white px-5 py-4 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all duration-500 placeholder:text-white/20 disabled:opacity-50"
-                            placeholder="Access Code"
+                            placeholder="••••••••"
                         />
                     </div>
                     <button
@@ -120,13 +122,13 @@ export default function LoginPage() {
                         disabled={isLoading || isGoogleLoading}
                         className="w-full py-4 mt-2 rounded-2xl bg-white text-black font-black uppercase tracking-[0.2em] text-xs shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-[1.02] active:scale-[0.98] hover:bg-neutral-200 transition-all duration-300 disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
-                        {isLoading ? <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" /> : 'Enter Database'}
+                        {isLoading ? <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" /> : 'Enter Cinema'}
                     </button>
                 </form>
 
                 <div className="mt-8 pt-6 border-t border-white/10 text-center">
                     <p className="text-[10px] text-white/40 uppercase tracking-[0.2em]">
-                        New Operative? <Link href="/register" className="text-white hover:underline ms-2">Request Clearance</Link>
+                        No ticket yet? <Link href="/register" className="text-white hover:underline ms-2">Join the Audience</Link>
                     </p>
                 </div>
             </motion.div>

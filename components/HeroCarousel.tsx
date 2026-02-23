@@ -70,14 +70,14 @@ export function HeroCarousel({ items, genreMap }: { items: TmdbResult[], genreMa
                                         transition={{ duration: 20, ease: "linear" }}
                                         src={backdropUrl}
                                         alt={title}
-                                        className="absolute inset-0 w-full h-full object-cover"
+                                        className="absolute inset-0 w-full h-full object-cover will-change-transform"
                                     />
                                 )}
 
                                 {/* Vignette Gradients for Text Legibility & Blend */}
                                 <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/60 sm:via-black/40 to-black/20" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-black/20 to-transparent" />
-                                <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px]" />
+                                <div className="absolute inset-0 bg-black/30" />
 
                                 {/* Typography Layout */}
                                 <div className="relative z-20 w-full h-full max-w-7xl mx-auto px-8 lg:px-12 flex items-center pt-24 pb-32">
