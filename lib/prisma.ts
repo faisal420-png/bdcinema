@@ -7,7 +7,15 @@ neonConfig.webSocketConstructor = ws;
 
 const prismaClientSingleton = () => {
     // We use the DATABASE_URL environment variable here.
-    const connectionString = process.env.DATABASE_URL || '';
+    let connectionString = process.env.DATABASE_URL || '';
+
+    // The Neon serverless adapter does not support pgbouncer, 
+    // so we must strip the query parameter if it exists.
+    if (connectionString.includes('pgbouncer=true')) {
+        connectionString = connectionString.replace('?pgbouncer=true', '');
+        connectionString = connectionString.replace('&pgbouncer=true', '');
+    }
+
     const pool = new Pool({ connectionString });
     const adapter = new PrismaNeon(pool);
 
