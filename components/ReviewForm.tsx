@@ -27,16 +27,16 @@ export function ReviewForm({ movieId, tmdbId, type, session, existingReview }: R
         return (
             <div className="border border-white/20 p-8 text-center bg-white/5">
                 <p className="text-sm font-bold tracking-widest uppercase text-white mb-6">
-                    Authentication Required for Transmission
+                    Sign in to leave a review
                 </p>
                 <div className="flex flex-col gap-4">
                     <a href="/login"
                         className="px-6 py-3 border border-white bg-white text-black text-xs font-black uppercase tracking-[0.2em] hover:bg-neutral-300 transition-colors">
-                        Authenticate
+                        Sign In
                     </a>
                     <a href="/register"
                         className="px-6 py-3 border border-white/20 text-white text-xs font-black uppercase tracking-[0.2em] hover:bg-white/10 hover:border-white transition-colors">
-                        Request Clearance
+                        Register
                     </a>
                 </div>
             </div>
@@ -68,7 +68,7 @@ export function ReviewForm({ movieId, tmdbId, type, session, existingReview }: R
                 {existingReview ? 'Update Review' : 'Leave a Review'}
             </h3>
             <p className="text-[10px] text-white/50 uppercase font-bold tracking-[0.3em] mb-8">
-                Operative <span className="text-white">{session.user.name}</span>
+                Critic <span className="text-white">{session.user.name}</span>
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-8">

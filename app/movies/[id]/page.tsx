@@ -137,7 +137,7 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
                                 <WatchlistToggle movieId={localMovie.id} initialSaved={isSaved} />
                             ) : (
                                 <p className="text-[10px] text-white/30 uppercase tracking-[0.2em] text-center border border-white/10 py-3 px-6 rounded-full">
-                                    Authenticate to track title
+                                    Sign in to add to watchlist
                                 </p>
                             )}
                         </div>
@@ -244,7 +244,7 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
                             ))}
                         </div>
                     ) : (
-                        <p className="text-xs text-white/30 uppercase tracking-[0.2em]">No cast databanks available.</p>
+                        <p className="text-xs text-white/30 uppercase tracking-[0.2em]">No cast information available.</p>
                     )}
 
                     {/* Directors & Producers */}
@@ -286,8 +286,8 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
 
                         {reviews.length === 0 ? (
                             <div className="p-16 text-center border border-white/5 rounded-3xl bg-white/[0.02] backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
-                                <p className="text-xl font-bold text-white/30 uppercase tracking-widest">No Transmissions</p>
-                                <p className="text-xs text-white/20 uppercase tracking-[0.2em] mt-4">Be the first to leave a mark.</p>
+                                <p className="text-xl font-bold text-white/30 uppercase tracking-widest">No Reviews Yet</p>
+                                <p className="text-xs text-white/20 uppercase tracking-[0.2em] mt-4">Be the first to share your thoughts.</p>
                             </div>
                         ) : (
                             <div className="space-y-6">

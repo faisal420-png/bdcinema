@@ -39,7 +39,8 @@ export async function POST(req: NextRequest) {
             } else {
                 // Auto-sync the TMDB movie
                 try {
-                    const tmdbData = await getTmdbDetails(tmdbId, type as 'movie' | 'tv');
+                    const fetchType = type === 'series' ? 'tv' : 'movie';
+                    const tmdbData = await getTmdbDetails(tmdbId, fetchType as 'movie' | 'tv');
 
                     // Parse genres locally for the sync
                     let genres: string[] = [];
