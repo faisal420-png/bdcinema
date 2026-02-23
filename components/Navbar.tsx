@@ -154,12 +154,23 @@ export function Navbar() {
                     </form>
 
                     {session ? (
-                        <div className="flex items-center gap-5">
+                        <div className="flex items-center gap-4">
                             <Link
                                 href={(session.user as any)?.role === 'admin' ? '/admin' : '/profile'}
-                                className="text-xs font-medium text-white/80 hidden sm:block hover:text-white transition-colors drop-shadow-md"
+                                className="flex items-center gap-2.5 group"
                             >
-                                {session.user?.name}
+                                <div className="w-8 h-8 rounded-full overflow-hidden border border-white/20 bg-white/5 flex items-center justify-center shrink-0 group-hover:border-white/40 transition-colors duration-300">
+                                    {session.user?.image ? (
+                                        <img src={session.user.image} alt="" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span className="text-xs font-bold text-white/70">
+                                            {(session.user?.name || '?').charAt(0).toUpperCase()}
+                                        </span>
+                                    )}
+                                </div>
+                                <span className="text-xs font-medium text-white/80 hidden sm:block group-hover:text-white transition-colors drop-shadow-md">
+                                    {session.user?.name}
+                                </span>
                             </Link>
                             <button onClick={() => signOut({ callbackUrl: '/' })}
                                 className="text-[10px] font-semibold text-white/60 tracking-wider hover:text-white transition-colors duration-300">

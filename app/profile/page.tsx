@@ -17,6 +17,7 @@ export default async function ProfileDashboard() {
     const userInfo = {
         name: session.user.name || '',
         email: session.user.email || '',
+        image: (session.user as any).image || null,
         created_at: (session.user as any).created_at
     };
 

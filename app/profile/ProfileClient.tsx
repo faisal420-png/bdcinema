@@ -1,5 +1,7 @@
 'use client';
 
+import { useState, useRef } from 'react';
+import { useSession } from 'next-auth/react';
 import { motion } from 'framer-motion';
 
 import type { Review, Movie } from '@prisma/client';
@@ -7,7 +9,7 @@ import type { Review, Movie } from '@prisma/client';
 export type ReviewWithMovie = Review & { movie: Movie };
 
 type ProfileProps = {
-    user: { name: string; email: string; created_at?: string };
+    user: { name: string; email: string; image?: string | null; created_at?: string };
     reviews: ReviewWithMovie[];
     children?: React.ReactNode;
 };
@@ -57,12 +59,39 @@ const ratingColors: Record<string, string> = {
 };
 
 export default function ProfileClient({ user, reviews, children }: ProfileProps) {
+    const { update: updateSession } = useSession();
+    const [avatarUrl, setAvatarUrl] = useState<string | null>(user.image || null);
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     const cred = reviews.length * 100;
     const rank = getRankInfo(cred);
     const mostGivenRating = getMostGivenRating(reviews);
 
     const memberSince = user.created_at ? new Date(user.created_at).getFullYear() : '2024';
     const displayName = user.name || user.email?.split('@')[0] || 'Unknown';
+
+    async function handleAvatarUpload(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setUploading(true);
+        try {
+            const fd = new FormData();
+            fd.append('file', file);
+            const res = await fetch('/api/profile/avatar', { method: 'POST', body: fd });
+            const data = await res.json();
+            if (res.ok && data.image) {
+                setAvatarUrl(data.image);
+                await updateSession({ image: data.image });
+            } else {
+                alert(data.error || 'Upload failed');
+            }
+        } catch {
+            alert('Upload failed');
+        } finally {
+            setUploading(false);
+        }
+    }
 
     return (
         <div className="min-h-screen bg-black pt-28 pb-16 relative overflow-hidden">
@@ -88,13 +117,38 @@ export default function ProfileClient({ user, reviews, children }: ProfileProps)
                         <div className="flex flex-col lg:flex-row items-center justify-between gap-10 relative z-10 w-full">
                             {/* Left: User Avatar & Intro */}
                             <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-8 w-full lg:w-auto">
-                                <div className="relative">
+                                <div className="relative cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept="image/jpeg,image/png,image/webp"
+                                        className="hidden"
+                                        onChange={handleAvatarUpload}
+                                    />
                                     <div className={`absolute inset-0 bg-gradient-to-r ${rank.color} blur-2xl opacity-40 group-hover:opacity-80 transition-opacity duration-700 animate-pulse`} />
                                     <div className="relative w-32 h-32 rounded-[2rem] bg-black border border-white/20 flex items-center justify-center overflow-hidden shrink-0 shadow-[0_0_50px_rgba(0,0,0,0.8)] z-10 transition-transform duration-500 group-hover:scale-[1.05] group-hover:rotate-3 rotate-0">
-                                        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-50 pointer-events-none" />
-                                        <span className={`text-6xl font-black tracking-widest bg-clip-text text-transparent bg-gradient-to-br from-white to-neutral-600`}>
-                                            {displayName.charAt(0).toUpperCase()}
-                                        </span>
+                                        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-50 pointer-events-none z-20" />
+                                        {avatarUrl ? (
+                                            <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <span className="text-6xl font-black tracking-widest bg-clip-text text-transparent bg-gradient-to-br from-white to-neutral-600">
+                                                {displayName.charAt(0).toUpperCase()}
+                                            </span>
+                                        )}
+                                        {/* Camera overlay */}
+                                        <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 z-30">
+                                            {uploading ? (
+                                                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                            ) : (
+                                                <>
+                                                    <svg className="w-7 h-7 text-white/80 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
+                                                    </svg>
+                                                    <span className="text-[9px] font-bold text-white/60 uppercase tracking-widest">Change</span>
+                                                </>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="flex-1 lg:flex-initial flex flex-col justify-center mt-2">
