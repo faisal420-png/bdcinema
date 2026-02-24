@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { getAllMovies } from '@/lib/db';
-import { trendingGlobal, popularMovies, popularSeries, fetchBangladeshiMovies, fetchIndianMovies, fetchIndianSeries, getGenres, type TmdbResult } from '@/lib/tmdb';
+import { trendingGlobal, popularMovies, popularSeries, fetchBangladeshiMovies, fetchBangladeshiSeries, fetchIndianMovies, fetchIndianSeries, getGenres, type TmdbResult } from '@/lib/tmdb';
 import { TmdbCard, MovieCard } from '@/components/MovieCard';
 import { HeroCarousel } from '@/components/HeroCarousel';
 import { Carousel } from '@/components/Carousel';
@@ -31,12 +31,13 @@ function TmdbCarouselCard({ item, typeLabel, genreMap }: { item: TmdbResult; typ
 }
 
 export default async function HomePage() {
-    const [localMovies, trending, popular, series, bdMovies, inMovies, inSeries, mGenres, tGenres] = await Promise.all([
-        getAllMovies(),
+    const [localMovies, trending, popular, series, bdMovies, bdSeries, inMovies, inSeries, mGenres, tGenres] = await Promise.all([
+        getAllMovies().catch(() => [] as any[]),
         trendingGlobal().catch(() => [] as TmdbResult[]),
         popularMovies().catch(() => [] as TmdbResult[]),
         popularSeries().catch(() => [] as TmdbResult[]),
         fetchBangladeshiMovies().catch(() => [] as TmdbResult[]),
+        fetchBangladeshiSeries().catch(() => [] as TmdbResult[]),
         fetchIndianMovies().catch(() => [] as TmdbResult[]),
         fetchIndianSeries().catch(() => [] as TmdbResult[]),
         getGenres('movie').catch(() => ({}) as Record<number, string>),
@@ -66,18 +67,50 @@ export default async function HomePage() {
                 )}
 
                 {/* ──── SPOTLIGHT ON BANGLADESH ─────────── */}
-                {localMovies.length > 0 && (
-                    <section className="mb-24 max-w-7xl mx-auto px-6 sm:px-10">
-                        <div className="flex flex-col gap-1 mb-10">
-                            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tighter uppercase">Bangladesh</h2>
-                            <span className="text-xs text-white/50 tracking-widest uppercase font-medium">Local Masterpieces</span>
+                {(localMovies.length > 0 || bdMovies.length > 0 || bdSeries.length > 0) && (
+                    <>
+                        {/* Section Header */}
+                        <div className="max-w-7xl mx-auto px-6 sm:px-10 mb-6">
+                            <div className="flex items-center gap-4 mb-1">
+                                <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tighter uppercase">Bangladesh</h2>
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/15 border border-green-500/30">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                                    <span className="text-[10px] text-green-400 font-bold tracking-widest uppercase">Trending</span>
+                                </span>
+                            </div>
+                            <span className="text-xs text-white/50 tracking-widest uppercase font-medium">Local Masterpieces &mdash; Deshi Cinema &amp; Series</span>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                            {localMovies.map((movie, i) => (
-                                <MovieCard key={movie.id} movie={movie} index={i} />
-                            ))}
-                        </div>
-                    </section>
+
+                        {/* Local reviewed movies grid */}
+                        {localMovies.length > 0 && (
+                            <section className="mb-12 max-w-7xl mx-auto px-6 sm:px-10">
+                                <p className="text-sm text-white/40 tracking-wider uppercase font-medium mb-6">Community Reviewed</p>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                                    {localMovies.map((movie, i) => (
+                                        <MovieCard key={movie.id} movie={movie} index={i} />
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+
+                        {/* TMDB Bangladeshi Trending Movies */}
+                        {bdMovies.length > 0 && (
+                            <Carousel title="Bangladeshi Films" subtitle="Popular Deshi Movies">
+                                {bdMovies.slice(0, 20).map(item => (
+                                    <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'movie' }} typeLabel="Film" genreMap={genreMap} />
+                                ))}
+                            </Carousel>
+                        )}
+
+                        {/* TMDB Bangladeshi Series */}
+                        {bdSeries.length > 0 && (
+                            <Carousel title="Bangladeshi Series" subtitle="Trending Deshi Web Series & TV">
+                                {bdSeries.slice(0, 20).map(item => (
+                                    <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'tv' }} typeLabel="Series" genreMap={genreMap} />
+                                ))}
+                            </Carousel>
+                        )}
+                    </>
                 )}
 
                 {/* ──── GENRE SPOTLIGHTS ──────────────────── */}
