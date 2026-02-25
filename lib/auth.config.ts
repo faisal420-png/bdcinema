@@ -1,7 +1,38 @@
 import type { NextAuthConfig } from 'next-auth';
 
+// Use secure prefix in production for custom cookies
+const isProd = process.env.NODE_ENV === 'production';
+const prefix = isProd ? '__Secure-' : '';
+const hostPrefix = isProd ? '__Host-' : '';
+
 export const authConfig = {
     trustHost: true,
+    cookies: {
+        sessionToken: {
+            name: `${prefix}bdcinema.session-token`,
+            options: { httpOnly: true, sameSite: 'lax', path: '/', secure: isProd }
+        },
+        callbackUrl: {
+            name: `${prefix}bdcinema.callback-url`,
+            options: { httpOnly: true, sameSite: 'lax', path: '/', secure: isProd }
+        },
+        csrfToken: {
+            name: `${hostPrefix}bdcinema.csrf-token`,
+            options: { httpOnly: true, sameSite: 'lax', path: '/', secure: isProd }
+        },
+        pkceCodeVerifier: {
+            name: `${prefix}bdcinema.pkce.code_verifier`,
+            options: { httpOnly: true, sameSite: 'lax', path: '/', secure: isProd, maxAge: 900 }
+        },
+        state: {
+            name: `${prefix}bdcinema.state`,
+            options: { httpOnly: true, sameSite: 'lax', path: '/', secure: isProd, maxAge: 900 }
+        },
+        nonce: {
+            name: `${prefix}bdcinema.nonce`,
+            options: { httpOnly: true, sameSite: 'lax', path: '/', secure: isProd }
+        }
+    },
     pages: {
         signIn: '/login',
     },
