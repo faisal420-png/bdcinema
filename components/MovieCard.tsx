@@ -82,7 +82,6 @@ export function TmdbCard({ id, title, posterPath, year, voteAverage, mediaType, 
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 240px"
                         unoptimized
-                        crossOrigin="anonymous"
                     />
                 ) : (
                     <AbstractPlaceholder title={title} />
@@ -206,7 +205,6 @@ export function MovieCard({ movie, index = 0 }: { movie: LocalMovie; index?: num
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 240px"
                         unoptimized
-                        crossOrigin="anonymous"
                     />
                 ) : (
                     <AbstractPlaceholder title={movie.title} />
