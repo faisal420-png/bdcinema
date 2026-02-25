@@ -2,7 +2,6 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { MagneticButton } from '@/components/MagneticButton';
 
 export function Carousel({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -26,41 +25,56 @@ export function Carousel({ title, subtitle, children }: { title: string; subtitl
     const scroll = (direction: 'left' | 'right') => {
         if (scrollRef.current) {
             const { clientWidth } = scrollRef.current;
-            const scrollAmount = direction === 'left' ? -clientWidth : clientWidth;
+            const scrollAmount = direction === 'left' ? -clientWidth * 0.7 : clientWidth * 0.7;
             scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
         }
     };
 
     return (
         <motion.section
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-24 group relative"
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
+            className="mb-16 group relative"
         >
-            <div className="flex flex-col gap-1.5 mb-8 px-8 sm:px-12 max-w-[1400px] mx-auto">
-                <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">{title}</h2>
-                {subtitle && <span className="text-[10px] text-white/50 tracking-widest uppercase font-medium">{subtitle}</span>}
+            {/* Section Header */}
+            <div className="flex items-end justify-between mb-6 px-6 sm:px-10 max-w-[1400px] mx-auto">
+                <div className="flex flex-col gap-1">
+                    <h2 className="text-xl sm:text-2xl font-display font-bold text-white tracking-tight">{title}</h2>
+                    {subtitle && <span className="text-[10px] text-white/40 tracking-widest uppercase font-medium">{subtitle}</span>}
+                </div>
+                {/* Arrow buttons visible on non-touch */}
+                <div className="hidden sm:flex items-center gap-1.5">
+                    <button
+                        onClick={() => scroll('left')}
+                        disabled={!canScrollLeft}
+                        className={`glass-btn rounded-full w-8 h-8 flex items-center justify-center transition-all duration-300 ${!canScrollLeft ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white/10'}`}
+                        aria-label="Scroll left"
+                    >
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+                    <button
+                        onClick={() => scroll('right')}
+                        disabled={!canScrollRight}
+                        className={`glass-btn rounded-full w-8 h-8 flex items-center justify-center transition-all duration-300 ${!canScrollRight ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white/10'}`}
+                        aria-label="Scroll right"
+                    >
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                </div>
             </div>
 
             <div className="relative max-w-[1400px] mx-auto">
+                {/* Left fade */}
                 {canScrollLeft && (
-                    <MagneticButton className="absolute left-0 top-0 bottom-10 z-20 flex items-center justify-start px-4 w-16 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <button
-                            onClick={() => scroll('left')}
-                            className="bg-transparent border-none appearance-none outline-none focus:outline-none flex items-center justify-center w-full h-full"
-                            aria-label="Scroll left"
-                        >
-                            <svg className="w-10 h-10 text-white drop-shadow-[0_0_15px_rgba(0,0,0,0.8)] hover:scale-125 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" /></svg>
-                        </button>
-                    </MagneticButton>
+                    <div className="absolute left-0 top-0 bottom-4 w-16 bg-gradient-to-r from-surface to-transparent z-10 pointer-events-none" />
                 )}
 
                 <div
                     ref={scrollRef}
                     onScroll={checkScroll}
-                    className="flex gap-4 overflow-x-auto pb-10 px-6 sm:px-10 scrollbar-hide snap-x snap-mandatory"
+                    className="flex gap-4 overflow-x-auto pb-6 px-6 sm:px-10 scrollbar-hide snap-x snap-mandatory"
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
                     <div className="flex gap-4 w-max">
@@ -68,16 +82,9 @@ export function Carousel({ title, subtitle, children }: { title: string; subtitl
                     </div>
                 </div>
 
+                {/* Right fade */}
                 {canScrollRight && (
-                    <MagneticButton className="absolute right-0 top-0 bottom-10 z-20 flex items-center justify-end px-4 w-16 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <button
-                            onClick={() => scroll('right')}
-                            className="bg-transparent border-none appearance-none outline-none focus:outline-none flex items-center justify-center w-full h-full"
-                            aria-label="Scroll right"
-                        >
-                            <svg className="w-10 h-10 text-white drop-shadow-[0_0_15px_rgba(0,0,0,0.8)] hover:scale-125 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" /></svg>
-                        </button>
-                    </MagneticButton>
+                    <div className="absolute right-0 top-0 bottom-4 w-16 bg-gradient-to-l from-surface to-transparent z-10 pointer-events-none" />
                 )}
             </div>
         </motion.section>

@@ -19,139 +19,117 @@ interface TmdbCardProps {
     overview?: string | null;
 }
 
-const AbstractPlaceholder = ({ title }: { title: string }) => (
-    <div className="relative w-full h-full bg-neutral-950 flex flex-col items-center justify-center p-6 text-center border border-white/10 overflow-hidden">
-        {/* 3D Abstract Geometric Background Grid */}
-        <div className="absolute inset-0 opacity-30"
-            style={{
-                backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)`,
-                backgroundSize: '40px 40px',
-                transform: 'perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px)',
-                transformOrigin: 'top center',
-            }}
-        />
-        {/* Stark gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
-        <span className="relative z-10 text-xl font-black text-white uppercase tracking-[0.3em] leading-[1.1] mix-blend-difference">{title}</span>
-    </div>
-);
+function AbstractPlaceholder({ title }: { title: string }) {
+    return (
+        <div className="absolute inset-0 flex items-center justify-center bg-surface-200">
+            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at center, rgba(139,92,246,0.3) 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+            <span className="text-base font-display font-bold text-white/60 uppercase tracking-[0.15em] text-center px-4 relative z-10">{title}</span>
+        </div>
+    );
+}
 
 export function TmdbCard({ id, title, posterPath, year, voteAverage, mediaType, isLocal, localId, customBadge, genres, overview }: TmdbCardProps) {
-    const imgSrc = posterPath
-        ? (posterPath.startsWith('http') || posterPath.startsWith('/images')
-            ? posterPath
-            : `https://image.tmdb.org/t/p/w500${posterPath.startsWith('/') ? posterPath : `/${posterPath}`}`)
-        : null;
-
-    // Use localId if available, otherwise route to the dynamic page with TMDB ID and type
-    const mType = mediaType === 'tv' || mediaType === 'series' ? 'series' : 'movie';
-    const href = isLocal && localId ? `/movies/${localId}` : `/movies/${id}?type=${mType}`;
-    const score = voteAverage ? (voteAverage / 2).toFixed(1) : null;
-
-    const [glowColor, setGlowColor] = useState<string | null>(null);
     const [isHovered, setIsHovered] = useState(false);
+    const [glowColor, setGlowColor] = useState('rgba(139, 92, 246, 0.15)');
+    const imgRef = useRef<HTMLImageElement>(null);
+
+    const linkId = isLocal && localId ? localId : id;
+    const linkType = mediaType || 'movie';
+    const href = isLocal
+        ? `/movies/${linkId}`
+        : `/movies/${id}?type=${linkType === 'tv' ? 'series' : linkType}`;
+
+    const posterUrl = posterPath
+        ? (posterPath.startsWith('http') ? posterPath : `https://image.tmdb.org/t/p/w500${posterPath}`)
+        : null;
 
     const handleMouseEnter = () => {
         setIsHovered(true);
-        if (!glowColor && imgSrc) {
+        if (imgRef.current) {
             const fac = new FastAverageColor();
-            fac.getColorAsync(imgSrc, { crossOrigin: 'anonymous' })
-                .then(color => {
-                    // Extract rgb array and create a low-opacity rgba syntax for the glow
-                    const [r, g, b] = color.value;
-                    setGlowColor(`rgba(${r}, ${g}, ${b}, 0.3)`);
+            fac.getColorAsync(imgRef.current, { algorithm: 'dominant' })
+                .then(c => {
+                    setGlowColor(`rgba(${c.value[0]}, ${c.value[1]}, ${c.value[2]}, 0.25)`);
                 })
-                .catch(() => {
-                    // Silently ignore color extraction errors (e.g., CORS or missing images)
-                    // so we don't trigger the Next.js dev error overlay
-                });
+                .catch(() => { });
         }
     };
 
-    const inner = (
-        <div
-            className="group relative overflow-visible transform-gpu cursor-pointer"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={() => setIsHovered(false)}
-        >
+    return (
+        <Link href={href} className="block group">
             <motion.div
-                layoutId={`poster-${id}`}
-                animate={{
-                    boxShadow: isHovered && glowColor ? `0 20px 40px -10px ${glowColor}` : '0 10px 30px -10px rgba(0,0,0,0.5)'
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={() => setIsHovered(false)}
+                className="relative aspect-[2/3] w-full rounded-2xl overflow-hidden cursor-pointer"
+                whileHover={{ scale: 1.04 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                style={{
+                    boxShadow: isHovered
+                        ? `0 20px 60px ${glowColor}, 0 0 40px ${glowColor}`
+                        : '0 4px 20px rgba(0, 0, 0, 0.3)',
                 }}
-                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="relative aspect-[2/3] overflow-hidden bg-neutral-900 rounded-xl transition-all duration-500 ease-out group-hover:-translate-y-2 border border-white/10 group-hover:border-white/20"
             >
+                {/* Glass border */}
+                <div className="absolute inset-0 rounded-2xl border border-white/[0.08] z-20 pointer-events-none transition-all duration-500 group-hover:border-white/[0.15]" />
+
                 {/* Poster */}
-                {imgSrc ? (
+                {posterUrl ? (
                     <Image
-                        src={imgSrc}
+                        ref={imgRef as any}
+                        src={posterUrl}
                         alt={title}
                         fill
-                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 240px"
                         unoptimized
+                        crossOrigin="anonymous"
                     />
                 ) : (
                     <AbstractPlaceholder title={title} />
                 )}
 
-                {/* Dark gradient overlay on hover */}
-                <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-black/90 via-black/40 to-transparent translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out z-0" />
-
-                {/* Media type pill */}
-                {mediaType && (
-                    <div className="absolute top-3 left-3 z-10 transition-transform duration-500">
-                        <div className="relative overflow-hidden backdrop-blur-md bg-white/10 border border-white/20 px-2.5 py-1 rounded-full shadow-sm group/badge hover:bg-white/20 transition-colors">
-                            <span className="relative z-10 text-[9px] font-semibold uppercase tracking-widest text-white">
-                                {customBadge || (mediaType === 'tv' || mediaType === 'series' ? 'Series' : 'Film')}
-                            </span>
-                        </div>
-                    </div>
-                )}
-
-                {/* Hover info text layout inside card */}
-                <div className="absolute bottom-0 left-0 right-0 p-5 z-10 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out flex flex-col justify-end">
-                    {score && (
-                        <div className="inline-flex mb-2">
-                            <span className="text-[10px] font-bold tracking-widest uppercase border border-white/30 px-2 py-0.5 rounded-sm bg-black/40 backdrop-blur-md text-white/90">
-                                {score} / 5.0
-                            </span>
-                        </div>
-                    )}
-                    <h3 className="text-white font-semibold text-sm sm:text-base tracking-tight leading-snug mb-1.5 drop-shadow-md">
-                        {title}
-                    </h3>
-
-                    {genres && genres.length > 0 && (
-                        <p className="text-[9px] font-bold tracking-widest uppercase text-white/50 mb-1.5">
-                            {genres.slice(0, 3).join(', ')}
-                        </p>
-                    )}
-                    {overview && (
-                        <p className="text-xs text-white/70 tracking-wide font-normal line-clamp-2 md:line-clamp-3 mb-3 leading-relaxed">
-                            {overview}
-                        </p>
-                    )}
-
-                    <div className="flex items-center justify-between mt-auto pt-1">
-                        {year ? <span className="text-white/60 text-[10px] font-medium tracking-wider">{year}</span> : <span />}
-                        <span className="text-white/90 font-semibold text-[10px] tracking-widest uppercase opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all delay-100 duration-500">
-                            Details →
+                {/* Badges */}
+                <div className="absolute top-3 left-3 right-3 flex justify-between z-30">
+                    {customBadge && (
+                        <span className="glass-pill bg-amethyst/20 text-amethyst-light border-amethyst/30 text-[10px]">
+                            {customBadge}
                         </span>
+                    )}
+                </div>
+
+                {/* Hover Overlay */}
+                <div className={`absolute inset-0 z-20 transition-all duration-500 flex flex-col justify-end p-4 ${isHovered ? 'opacity-100' : 'opacity-0'
+                    }`}>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
+                    <div className="relative z-10">
+                        <h3 className="text-sm font-display font-bold text-white leading-tight mb-1 line-clamp-2">{title}</h3>
+                        <div className="flex items-center gap-2 mb-2">
+                            {year && <span className="text-[10px] text-white/60 font-medium">{year}</span>}
+                            {voteAverage && voteAverage > 0 && (
+                                <>
+                                    <span className="w-1 h-1 rounded-full bg-amethyst-light" />
+                                    <span className="text-[10px] text-amethyst-light font-bold">{voteAverage.toFixed(1)}</span>
+                                </>
+                            )}
+                        </div>
+                        {genres && genres.length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                                {genres.slice(0, 2).map(g => (
+                                    <span key={g} className="text-[8px] text-white/50 font-bold uppercase tracking-wider bg-white/10 px-1.5 py-0.5 rounded-full">{g}</span>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
             </motion.div>
-        </div>
+        </Link>
     );
-
-    return <Link href={href}>{inner}</Link>;
 }
 
 // Re-export for backward compat with existing movie listing pages
 import { MeterBadge, type MeterRatingValue } from './MeterRating';
 
-type LocalMovie = {
+interface LocalMovie {
     id: number;
     title: string;
     original_title?: string | null;
@@ -162,118 +140,108 @@ type LocalMovie = {
     overview?: string | null;
     review_count?: number;
     ratings?: string | null;
-};
+}
 
 function getModeRating(ratings: string | null | undefined): MeterRatingValue | null {
     if (!ratings) return null;
-    const arr = ratings.split(',');
+    const arr = ratings.split(',').filter(Boolean);
+    if (arr.length === 0) return null;
     const counts: Record<string, number> = {};
     for (const r of arr) counts[r] = (counts[r] || 0) + 1;
-    return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] as MeterRatingValue || null;
+    return Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0] as MeterRatingValue;
 }
 
 export function MovieCard({ movie, index = 0 }: { movie: LocalMovie; index?: number }) {
+    const [isHovered, setIsHovered] = useState(false);
+    const [glowColor, setGlowColor] = useState('rgba(139, 92, 246, 0.15)');
+    const imgRef = useRef<HTMLImageElement>(null);
+
     const modeRating = getModeRating(movie.ratings);
 
-    let genres: string[] = [];
-    if (movie.genres) {
-        try {
-            const parsed = JSON.parse(movie.genres);
-            genres = Array.isArray(parsed) ? parsed : [movie.genres];
-        } catch { genres = [movie.genres]; }
-    }
-
-    const [glowColor, setGlowColor] = useState<string | null>(null);
-    const [isHovered, setIsHovered] = useState(false);
+    const meterColorMap: Record<string, string> = {
+        disaster: 'bg-red-500/20 text-red-400 border-red-500/30',
+        timepass: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+        go_for_it: 'bg-teal/20 text-teal-light border-teal/30',
+        perfection: 'bg-amethyst/20 text-amethyst-light border-amethyst/30',
+    };
 
     const handleMouseEnter = () => {
         setIsHovered(true);
-        if (!glowColor && movie.poster_url) {
+        if (imgRef.current) {
             const fac = new FastAverageColor();
-            fac.getColorAsync(movie.poster_url, { crossOrigin: 'anonymous' })
-                .then(color => {
-                    const [r, g, b] = color.value;
-                    setGlowColor(`rgba(${r}, ${g}, ${b}, 0.3)`);
+            fac.getColorAsync(imgRef.current, { algorithm: 'dominant' })
+                .then(c => {
+                    setGlowColor(`rgba(${c.value[0]}, ${c.value[1]}, ${c.value[2]}, 0.25)`);
                 })
-                .catch(() => {
-                    // Silently ignore color extraction errors
-                });
+                .catch(() => { });
         }
     };
 
     return (
-        <Link href={`/movies/${movie.id}`}>
-            <div
-                className="group relative overflow-visible transform-gpu cursor-pointer animate-fade-up"
-                style={{ animationDelay: `${index * 60}ms`, animationFillMode: 'backwards' }}
+        <Link href={`/movies/${movie.id}`} className="block group">
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.05, ease: [0.34, 1.56, 0.64, 1] }}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={() => setIsHovered(false)}
+                className="relative aspect-[2/3] w-full rounded-2xl overflow-hidden cursor-pointer"
+                whileHover={{ scale: 1.04 }}
+                style={{
+                    boxShadow: isHovered
+                        ? `0 20px 60px ${glowColor}, 0 0 40px ${glowColor}`
+                        : '0 4px 20px rgba(0, 0, 0, 0.3)',
+                }}
             >
-                <motion.div
-                    layoutId={`local-poster-${movie.id}`}
-                    animate={{
-                        boxShadow: isHovered && glowColor ? `0 20px 40px -10px ${glowColor}` : '0 10px 30px -10px rgba(0,0,0,0.5)'
-                    }}
-                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative aspect-[2/3] overflow-hidden bg-neutral-900 rounded-xl transition-all duration-500 ease-out group-hover:-translate-y-2 border border-white/10 group-hover:border-white/20"
-                >
-                    {movie.poster_url ? (
-                        <Image
-                            src={movie.poster_url.startsWith('http') || movie.poster_url.startsWith('/images')
-                                ? movie.poster_url
-                                : `https://image.tmdb.org/t/p/w500${movie.poster_url.startsWith('/') ? movie.poster_url : `/${movie.poster_url}`}`}
-                            alt={movie.title}
-                            fill
-                            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
-                            unoptimized
-                        />
-                    ) : (
-                        <AbstractPlaceholder title={movie.title} />
-                    )}
-                    <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-black/90 via-black/40 to-transparent translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out z-0" />
+                {/* Glass border */}
+                <div className="absolute inset-0 rounded-2xl border border-white/[0.08] z-20 pointer-events-none transition-all duration-500 group-hover:border-white/[0.15]" />
 
+                {/* Poster */}
+                {movie.poster_url ? (
+                    <Image
+                        ref={imgRef as any}
+                        src={movie.poster_url}
+                        alt={movie.title}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 240px"
+                        unoptimized
+                        crossOrigin="anonymous"
+                    />
+                ) : (
+                    <AbstractPlaceholder title={movie.title} />
+                )}
+
+                {/* Badges */}
+                <div className="absolute top-3 left-3 right-3 flex justify-between items-start z-30">
+                    <span className="glass-pill bg-white/10 text-white/70 text-[10px]">
+                        {movie.type === 'series' ? 'Series' : 'Film'}
+                    </span>
                     {modeRating && (
-                        <div className="absolute top-3 right-3 z-10 transition-transform duration-500 group-hover:scale-105">
-                            <span className="text-[10px] font-bold tracking-widest uppercase border border-white/30 bg-black/40 backdrop-blur-md text-white px-2 py-0.5 rounded-sm shadow-md">
-                                {modeRating}
-                            </span>
-                        </div>
+                        <span className={`glass-pill text-[10px] ${meterColorMap[modeRating] || ''}`}>
+                            {modeRating.replace('_', ' ')}
+                        </span>
                     )}
+                </div>
 
-                    <div className="absolute top-3 left-3 z-10 transition-transform duration-500">
-                        <div className="relative overflow-hidden backdrop-blur-md bg-white/10 border border-white/20 px-2.5 py-1 rounded-full shadow-sm group/badge hover:bg-white/20 transition-colors">
-                            <span className="relative z-10 text-[9px] font-semibold uppercase tracking-widest text-white">
-                                {movie.type === 'series' ? 'Series' : 'Film'}
-                            </span>
+                {/* Hover Overlay */}
+                <div className={`absolute inset-0 z-20 transition-all duration-500 flex flex-col justify-end p-4 ${isHovered ? 'opacity-100' : 'opacity-0'
+                    }`}>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
+                    <div className="relative z-10">
+                        <h3 className="text-sm font-display font-bold text-white leading-tight mb-1 line-clamp-2">{movie.title}</h3>
+                        <div className="flex items-center gap-2">
+                            {movie.release_year && <span className="text-[10px] text-white/60 font-medium">{movie.release_year}</span>}
+                            {movie.review_count && movie.review_count > 0 && (
+                                <>
+                                    <span className="w-1 h-1 rounded-full bg-amethyst-light" />
+                                    <span className="text-[10px] text-white/50 font-medium">{movie.review_count} reviews</span>
+                                </>
+                            )}
                         </div>
                     </div>
-
-                    <div className="absolute bottom-0 left-0 right-0 p-5 z-10 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out flex flex-col justify-end">
-                        <h3 className="text-white font-semibold text-sm sm:text-base tracking-tight leading-snug mb-1.5 drop-shadow-md">
-                            {movie.title}
-                        </h3>
-
-                        {genres.length > 0 && (
-                            <p className="text-[9px] font-bold tracking-widest uppercase text-white/50 mb-1.5">
-                                {genres.slice(0, 3).join(', ')}
-                            </p>
-                        )}
-                        {movie.overview && (
-                            <p className="text-xs text-white/70 tracking-wide font-normal line-clamp-2 md:line-clamp-3 mb-3 leading-relaxed">
-                                {movie.overview}
-                            </p>
-                        )}
-
-                        <div className="flex items-center justify-between mt-auto pt-1">
-                            {movie.release_year ? <span className="text-white/60 text-[10px] font-medium tracking-wider">{movie.release_year}</span> : <span />}
-                            <span className="text-white/90 font-semibold text-[10px] tracking-widest uppercase opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all delay-100 duration-500">
-                                Details →
-                            </span>
-                        </div>
-                    </div>
-                </motion.div>
-            </div>
+                </div>
+            </motion.div>
         </Link>
     );
 }

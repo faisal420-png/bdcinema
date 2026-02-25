@@ -1,5 +1,5 @@
 import { prisma } from './prisma';
-import type { User, Movie, Review, WatchlistItem } from '@prisma/client';
+import type { User, Movie, Review, WatchlistItem, WatchedItem, InterestedItem } from '@prisma/client';
 
 export type MovieWithStats = Movie & {
     review_count: number;
@@ -7,6 +7,7 @@ export type MovieWithStats = Movie & {
 };
 export type ReviewWithUser = Review & { user_name: string };
 export type WatchlistItemWithMovie = WatchlistItem & { movie: Movie };
+export type WatchedItemWithMovie = WatchedItem & { movie: Movie };
 
 // ── User queries ─────────────────────────────────
 export async function getUserByEmail(email: string) {
@@ -118,6 +119,67 @@ export async function toggleWatchlist(userId: string, movieId: number) {
 export async function isInWatchlist(userId: string, movieId: number): Promise<boolean> {
     const item = await prisma.watchlistItem.findUnique({
         where: { movie_id_user_id: { movie_id: movieId, user_id: userId } }
+    });
+    return !!item;
+}
+
+// ── Watched queries ───────────────────────────────
+export async function getUserWatched(userId: string): Promise<WatchedItemWithMovie[]> {
+    return prisma.watchedItem.findMany({
+        where: { user_id: userId },
+        include: { movie: true },
+        orderBy: { watched_at: 'desc' }
+    });
+}
+
+export async function toggleWatched(userId: string, movieId: number) {
+    const existing = await prisma.watchedItem.findUnique({
+        where: { movie_id_user_id: { movie_id: movieId, user_id: userId } }
+    });
+    if (existing) {
+        await prisma.watchedItem.delete({ where: { id: existing.id } });
+        return false;
+    } else {
+        await prisma.watchedItem.create({
+            data: { movie_id: movieId, user_id: userId }
+        });
+        return true;
+    }
+}
+
+export async function isWatched(userId: string, movieId: number): Promise<boolean> {
+    const item = await prisma.watchedItem.findUnique({
+        where: { movie_id_user_id: { movie_id: movieId, user_id: userId } }
+    });
+    return !!item;
+}
+
+// ── Interested queries ────────────────────────────
+export async function getUserInterested(userId: string) {
+    return prisma.interestedItem.findMany({
+        where: { user_id: userId },
+        orderBy: { created_at: 'desc' }
+    });
+}
+
+export async function toggleInterested(userId: string, tmdbId: number, mediaType: string) {
+    const existing = await prisma.interestedItem.findUnique({
+        where: { tmdb_id_user_id: { tmdb_id: tmdbId, user_id: userId } }
+    });
+    if (existing) {
+        await prisma.interestedItem.delete({ where: { id: existing.id } });
+        return false;
+    } else {
+        await prisma.interestedItem.create({
+            data: { tmdb_id: tmdbId, media_type: mediaType, user_id: userId }
+        });
+        return true;
+    }
+}
+
+export async function isInterested(userId: string, tmdbId: number): Promise<boolean> {
+    const item = await prisma.interestedItem.findUnique({
+        where: { tmdb_id_user_id: { tmdb_id: tmdbId, user_id: userId } }
     });
     return !!item;
 }

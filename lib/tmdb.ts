@@ -138,6 +138,21 @@ export async function getTmdbPersonCredits(id: number): Promise<{ cast: TmdbResu
     return await r.json();
 }
 
+// ── Related & Upcoming ────────────────────────
+export async function fetchSimilar(id: number, type: 'movie' | 'tv'): Promise<TmdbResult[]> {
+    const r = await fetch(`${TMDB_BASE}/${type}/${id}/similar?api_key=${apiKey()}&language=en-US&page=1`, { next: { revalidate: 3600 } });
+    if (!r.ok) return [];
+    const d = await r.json() as { results: TmdbResult[] };
+    return d.results.filter(i => i.poster_path);
+}
+
+export async function fetchUpcoming(): Promise<TmdbResult[]> {
+    const r = await fetch(`${TMDB_BASE}/movie/upcoming?api_key=${apiKey()}&language=en-US&page=1&region=BD`, { next: { revalidate: 3600 } });
+    if (!r.ok) return [];
+    const d = await r.json() as { results: TmdbResult[] };
+    return d.results.filter(i => i.poster_path);
+}
+
 // ── Sync to local db ──────────────────────────
 export async function syncBangladeshiContent() {
     const { upsertTmdbMovie } = await import('./db');

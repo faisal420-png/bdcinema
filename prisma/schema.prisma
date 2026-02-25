@@ -55,6 +55,8 @@ model User {
   // BDCinema Relations
   reviews       Review[]
   watchlists    WatchlistItem[]
+  watched       WatchedItem[]
+  interested    InterestedItem[]
 }
 
 model VerificationToken {
@@ -82,6 +84,7 @@ model Movie {
 
   reviews       Review[]
   watchlists    WatchlistItem[]
+  watched       WatchedItem[]
 }
 
 model Review {
@@ -107,5 +110,29 @@ model WatchlistItem {
   movie Movie @relation(fields: [movie_id], references: [id], onDelete: Cascade)
   user  User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-  @@unique([movie_id, user_id]) // Prevent duplicate watchlist entries
+  @@unique([movie_id, user_id])
+}
+
+model WatchedItem {
+  id         Int      @id @default(autoincrement())
+  movie_id   Int
+  user_id    String
+  watched_at DateTime @default(now())
+
+  movie Movie @relation(fields: [movie_id], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([movie_id, user_id])
+}
+
+model InterestedItem {
+  id         Int      @id @default(autoincrement())
+  tmdb_id    Int
+  media_type String   // 'movie' | 'tv'
+  user_id    String
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([tmdb_id, user_id])
 }

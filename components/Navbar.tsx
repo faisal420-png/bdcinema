@@ -8,183 +8,200 @@ import { motion, AnimatePresence } from 'framer-motion';
 export function Navbar() {
     const { data: session } = useSession();
     const router = useRouter();
-    const [searchQuery, setSearchQuery] = useState('');
+    const [query, setQuery] = useState('');
+    const [scrolled, setScrolled] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [profileOpen, setProfileOpen] = useState(false);
+    const profileRef = useRef<HTMLDivElement>(null);
 
-    const [isFocused, setIsFocused] = useState(false);
-    const [results, setResults] = useState<any[]>([]);
-    const [isSearching, setIsSearching] = useState(false);
-    const searchRef = useRef<HTMLFormElement>(null);
-
-    // Close dropdown on outside click
     useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
-                setIsFocused(false);
+        const onScroll = () => setScrolled(window.scrollY > 20);
+        window.addEventListener('scroll', onScroll);
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
+
+    useEffect(() => {
+        function handleClickOutside(e: MouseEvent) {
+            if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+                setProfileOpen(false);
             }
-        };
+        }
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Debounced search effect
-    useEffect(() => {
-        const delayDebounceFn = setTimeout(async () => {
-            if (searchQuery.trim().length > 1) {
-                setIsSearching(true);
-                try {
-                    const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`);
-                    const data = await res.json();
-                    setResults(data.results || []);
-                } catch (error) {
-                    console.error('Failed to fetch suggestions:', error);
-                } finally {
-                    setIsSearching(false);
-                }
-            } else {
-                setResults([]);
-            }
-        }, 300);
-
-        return () => clearTimeout(delayDebounceFn);
-    }, [searchQuery]);
-
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        if (searchQuery.trim()) {
-            router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-            setSearchQuery('');
-            setIsFocused(false);
+        if (query.trim()) {
+            router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+            setQuery('');
+            setMenuOpen(false);
         }
     };
 
+    const userImage = session?.user?.image;
+    const userName = session?.user?.name || 'User';
+
     return (
-        <header className="fixed top-6 left-0 right-0 z-50 pointer-events-none px-4 flex justify-center">
-            <nav className="w-full max-w-5xl bg-black/40 backdrop-blur-[40px] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] rounded-full px-6 h-16 flex items-center justify-between pointer-events-auto transition-all duration-500">
-                <Link href="/" className="flex items-center gap-1.5 group">
-                    <span className="font-semibold text-xl tracking-tight text-white drop-shadow-md">
-                        BDCinema
-                    </span>
-                </Link>
+        <>
+            <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-spring ${scrolled ? 'py-2' : 'py-4'}`}>
+                <div className={`max-w-6xl mx-auto mx-4 sm:mx-6 lg:mx-auto px-4 sm:px-6 py-3 rounded-2xl transition-all duration-700 ease-spring ${scrolled
+                        ? 'liquid-glass-strong shadow-[0_8px_32px_rgba(0,0,0,0.5)]'
+                        : 'bg-transparent'
+                    }`}>
+                    <div className="flex items-center justify-between gap-4">
+                        {/* Logo */}
+                        <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
+                            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amethyst to-amethyst-dark flex items-center justify-center shadow-lg group-hover:shadow-amethyst-glow transition-shadow duration-500">
+                                <span className="text-white font-black text-xs">B</span>
+                            </div>
+                            <span className="font-display font-bold text-base text-white hidden sm:block">
+                                BD<span className="text-amethyst-light">Cinema</span>
+                            </span>
+                        </Link>
 
-                <div className="flex items-center gap-6 sm:gap-10">
-                    {/* Global Multi-Search Form */}
-                    <form ref={searchRef} onSubmit={handleSearch} className="relative hidden md:flex items-center">
-                        <input
-                            type="search"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            onFocus={() => setIsFocused(true)}
-                            placeholder="Search..."
-                            className="w-48 focus:w-64 bg-white/[0.03] border border-white/10 rounded-full pl-5 pr-10 py-1.5 text-xs text-white font-medium tracking-wide placeholder-white/40 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all duration-300 shadow-inner"
-                        />
-                        <button type="submit" className="absolute right-3 text-white/50 hover:text-white transition-colors" aria-label="Submit search">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                        </button>
+                        {/* Center Search */}
+                        <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md mx-auto">
+                            <div className="relative w-full group">
+                                <input
+                                    type="text"
+                                    value={query}
+                                    onChange={(e) => setQuery(e.target.value)}
+                                    placeholder="Search movies, series..."
+                                    className="w-full glass-input rounded-full pl-10 pr-4 py-2.5 text-sm font-medium"
+                                />
+                                <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-amethyst-light transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                        </form>
 
-                        {/* Dropdown Suggestions */}
-                        <AnimatePresence>
-                            {isFocused && searchQuery.trim().length > 1 && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                                    transition={{ duration: 0.2, ease: "easeOut" }}
-                                    className="absolute top-12 right-0 w-[400px] bg-white/[0.02] backdrop-blur-[40px] shadow-[0_32px_64px_rgba(0,0,0,0.8)] border border-white/10 rounded-3xl p-2 z-50 overflow-hidden"
-                                >
-                                    <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
-                                    <div className="relative z-10 w-full rounded-2xl overflow-hidden bg-black/20">
-                                        {isSearching ? (
-                                            <div className="p-6 flex items-center justify-center">
-                                                <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                                            </div>
-                                        ) : results.length > 0 ? (
-                                            <ul className="flex flex-col py-2">
-                                                {results.map((item) => (
-                                                    <li key={item.id} className="relative">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => {
-                                                                router.push(`/movies/${item.id}?type=${item.media_type === 'tv' ? 'series' : 'movie'}`);
-                                                                setSearchQuery('');
-                                                                setIsFocused(false);
-                                                            }}
-                                                            className="w-full text-left px-4 py-2 hover:bg-white/[0.05] transition-colors flex items-center gap-4 group"
-                                                        >
-                                                            {item.poster_path ? (
-                                                                <div className="w-10 rounded-md overflow-hidden bg-neutral-800 shadow-sm object-cover aspect-[2/3] border border-white/5 group-hover:border-white/20 transition-colors">
-                                                                    <img
-                                                                        src={`https://image.tmdb.org/t/p/w92${item.poster_path}`}
-                                                                        alt={item.title || item.name}
-                                                                        className="w-full h-full object-cover"
-                                                                    />
-                                                                </div>
-                                                            ) : (
-                                                                <div className="w-10 rounded-md bg-white/5 flex items-center justify-center aspect-[2/3] border border-white/5 group-hover:border-white/20 transition-colors">
-                                                                    <svg className="w-4 h-4 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                                                                </div>
-                                                            )}
-
-                                                            <div className="flex-1 min-w-0 flex flex-col justify-center">
-                                                                <p className="text-sm font-medium text-white/90 truncate mb-0.5 group-hover:text-white transition-colors">
-                                                                    {item.title || item.name}
-                                                                </p>
-                                                                <p className="text-[10px] text-white/50 tracking-wide flex items-center gap-1.5">
-                                                                    <span className="opacity-80 md:bg-white/5 md:px-1.5 md:py-0.5 md:rounded-sm">{item.media_type === 'tv' ? 'Series' : 'Film'}</span>
-                                                                    {(item.release_date || item.first_air_date) && (
-                                                                        <>
-                                                                            <span className="w-0.5 h-0.5 rounded-full bg-white/30" />
-                                                                            <span>{(item.release_date?.split('-')[0]) || (item.first_air_date?.split('-')[0])}</span>
-                                                                        </>
-                                                                    )}
-                                                                </p>
-                                                            </div>
-                                                        </button>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        ) : (
-                                            <div className="p-8 text-center">
-                                                <p className="text-xs font-medium text-white/40">No results found</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </form>
-
-                    {session ? (
-                        <div className="flex items-center gap-4">
-                            <Link
-                                href={(session.user as any)?.role === 'admin' ? '/admin' : '/profile'}
-                                className="flex items-center gap-2.5 group"
-                            >
-                                <div className="w-8 h-8 rounded-full overflow-hidden border border-white/20 bg-white/5 flex items-center justify-center shrink-0 group-hover:border-white/40 transition-colors duration-300">
-                                    {session.user?.image ? (
-                                        <img src={session.user.image} alt="" className="w-full h-full object-cover" />
-                                    ) : (
-                                        <span className="text-xs font-bold text-white/70">
-                                            {(session.user?.name || '?').charAt(0).toUpperCase()}
-                                        </span>
+                        {/* Right Actions */}
+                        <div className="flex items-center gap-2">
+                            {session?.user ? (
+                                <>
+                                    {/* Admin Link */}
+                                    {(session.user as any).role === 'admin' && (
+                                        <Link href="/admin" className="glass-pill hover:bg-white/10 transition-all duration-300 hidden sm:block">
+                                            Admin
+                                        </Link>
                                     )}
+
+                                    {/* Profile Dropdown */}
+                                    <div className="relative" ref={profileRef}>
+                                        <button
+                                            onClick={() => setProfileOpen(!profileOpen)}
+                                            className="flex items-center gap-2 glass-btn rounded-full px-1.5 py-1.5 pr-3"
+                                        >
+                                            {userImage ? (
+                                                <img src={userImage} className="w-7 h-7 rounded-full object-cover" alt="" />
+                                            ) : (
+                                                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-amethyst to-rose flex items-center justify-center">
+                                                    <span className="text-white text-xs font-bold">{userName[0]?.toUpperCase()}</span>
+                                                </div>
+                                            )}
+                                            <span className="text-xs font-semibold text-white/80 hidden sm:block">{userName.split(' ')[0]}</span>
+                                            <svg className={`w-3 h-3 text-white/40 transition-transform duration-300 ${profileOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </button>
+
+                                        <AnimatePresence>
+                                            {profileOpen && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                    exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                                                    transition={{ duration: 0.2, ease: [0.34, 1.56, 0.64, 1] }}
+                                                    className="absolute right-0 top-full mt-2 w-52 rounded-2xl liquid-glass-strong overflow-hidden"
+                                                >
+                                                    <div className="p-2">
+                                                        <Link href="/profile" onClick={() => setProfileOpen(false)}
+                                                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-white/80 hover:text-white hover:bg-white/[0.06] transition-all duration-300">
+                                                            <svg className="w-4 h-4 text-amethyst-light" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                                                            Profile
+                                                        </Link>
+                                                        <div className="my-1 h-px bg-white/[0.06]" />
+                                                        <button onClick={() => { setProfileOpen(false); signOut(); }}
+                                                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-rose-light/80 hover:text-rose-light hover:bg-rose/[0.06] transition-all duration-300">
+                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                                                            Sign Out
+                                                        </button>
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="flex items-center gap-2">
+                                    <Link href="/login" className="glass-pill hover:bg-white/10 transition-all duration-300 text-white/70 hover:text-white">
+                                        Sign In
+                                    </Link>
+                                    <Link href="/register" className="glass-btn-primary glass-btn rounded-full px-4 py-2 text-xs font-bold tracking-wider">
+                                        Join
+                                    </Link>
                                 </div>
-                                <span className="text-xs font-medium text-white/80 hidden sm:block group-hover:text-white transition-colors drop-shadow-md">
-                                    {session.user?.name}
-                                </span>
-                            </Link>
-                            <button onClick={() => signOut({ callbackUrl: '/' })}
-                                className="text-[10px] font-semibold text-white/60 tracking-wider hover:text-white transition-colors duration-300">
-                                Sign Out
+                            )}
+
+                            {/* Mobile Menu Toggle */}
+                            <button
+                                onClick={() => setMenuOpen(!menuOpen)}
+                                className="md:hidden glass-btn rounded-xl p-2"
+                            >
+                                <svg className="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    {menuOpen
+                                        ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                    }
+                                </svg>
                             </button>
                         </div>
-                    ) : (
-                        <Link href="/login"
-                            className="text-[11px] font-semibold bg-white text-black px-4 py-1.5 rounded-full tracking-wide hover:bg-neutral-200 hover:scale-105 transition-all duration-300 shadow-[0_2px_10px_rgba(255,255,255,0.1)] hover:shadow-[0_4px_15px_rgba(255,255,255,0.2)]">
-                            Sign In
-                        </Link>
-                    )}
+                    </div>
                 </div>
             </nav>
-        </header>
+
+            {/* Mobile Menu Overlay */}
+            <AnimatePresence>
+                {menuOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="fixed inset-0 z-40 md:hidden"
+                    >
+                        <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={() => setMenuOpen(false)} />
+                        <motion.div
+                            initial={{ y: -20, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: -20, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+                            className="relative mt-20 mx-4 rounded-2xl liquid-glass-strong p-6"
+                        >
+                            <form onSubmit={handleSearch} className="mb-6">
+                                <input
+                                    type="text"
+                                    value={query}
+                                    onChange={(e) => setQuery(e.target.value)}
+                                    placeholder="Search..."
+                                    className="w-full glass-input rounded-xl px-4 py-3 text-sm"
+                                />
+                            </form>
+                            <div className="flex flex-col gap-2">
+                                <Link href="/" onClick={() => setMenuOpen(false)} className="px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/[0.06] transition-all duration-300">Home</Link>
+                                <Link href="/search" onClick={() => setMenuOpen(false)} className="px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/[0.06] transition-all duration-300">Explore</Link>
+                                {session?.user && (
+                                    <Link href="/profile" onClick={() => setMenuOpen(false)} className="px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/[0.06] transition-all duration-300">Profile</Link>
+                                )}
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Spacer for fixed nav */}
+            <div className="h-20" />
+        </>
     );
 }
