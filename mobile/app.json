@@ -16,6 +16,8 @@
     },
     "android": {
       "package": "com.bdcinema.app",
+      "softwareKeyboardLayoutMode": "pan",
+      "windowSoftInputMode": "adjustPan",
       "adaptiveIcon": {
         "backgroundColor": "#050510",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -23,6 +25,22 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       }
     },
+    "plugins": [
+      [
+        "expo-system-ui",
+        {
+          "windowBackground": "#050510"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableHighRefreshRate": true
+          }
+        }
+      ]
+    ],
     "web": {
       "favicon": "./assets/favicon.png"
     },
