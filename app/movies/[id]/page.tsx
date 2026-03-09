@@ -114,7 +114,7 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
                 
                 {/* Mobile Top App Bar (Back Button) */}
                 <div className="absolute top-0 left-0 right-0 p-6 pt-safe z-30 flex justify-between md:hidden">
-                    <Link href="/" className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white border border-white/10 active:scale-95 transition-transform">
+                    <Link href="/" className="w-10 h-10 rounded-full bg-black/60 md:bg-black/40 md:backdrop-blur-md flex items-center justify-center text-white border border-white/10 active:scale-95 transition-transform">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7"/></svg>
                     </Link>
                 </div>
@@ -229,7 +229,7 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
                         {genres.length > 0 && (
                             <div className="hidden md:flex flex-wrap gap-2 mb-10">
                                 {genres.map((g: string) => (
-                                    <span key={g} className="px-4 py-1.5 text-xs font-black tracking-[0.2em] uppercase text-white border border-white/20 rounded-full shadow-[0_0_15px_-5px_rgba(255,255,255,0.2)] bg-white/5 backdrop-blur-md">
+                                    <span key={g} className="px-4 py-1.5 text-xs font-black tracking-[0.2em] uppercase text-white border border-white/20 rounded-full shadow-[0_0_15px_-5px_rgba(255,255,255,0.2)] bg-black/60 md:bg-white/5 md:backdrop-blur-md">
                                         {g}
                                     </span>
                                 ))}
@@ -247,7 +247,7 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
 
                         {/* Global Verdict / Review Summary */}
                         {reviews.length > 0 && (
-                            <div className="mt-12 p-8 rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-[40px] shadow-[0_8px_32px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:bg-white/[0.04] transition-colors duration-500">
+                            <div className="mt-12 p-8 rounded-3xl border border-white/10 bg-[#050505]/95 md:bg-white/[0.02] md:backdrop-blur-[40px] shadow-[0_8px_32px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:bg-white/[0.04] transition-colors duration-500">
                                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                                 <p className="text-xs text-white/50 uppercase font-bold tracking-[0.3em] mb-6 flex items-center gap-4">
                                     <span className="w-8 h-px bg-white/20" />
@@ -307,7 +307,7 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
 
                     {/* Directors & Producers */}
                     {(directors.length > 0 || producers.length > 0) && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-16 p-8 md:p-12 border border-white/10 rounded-3xl bg-white/[0.02] backdrop-blur-[40px] shadow-[0_8px_32px_rgba(0,0,0,0.5)] hover:bg-white/[0.04] transition-colors duration-500">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-16 p-8 md:p-12 border border-white/10 rounded-3xl bg-[#050505]/95 md:bg-white/[0.02] md:backdrop-blur-[40px] shadow-[0_8px_32px_rgba(0,0,0,0.5)] hover:bg-white/[0.04] transition-colors duration-500">
                             {directors.length > 0 && (
                                 <div>
                                     <p className="text-[10px] text-white/40 uppercase font-black tracking-[0.3em] mb-4">Directed By</p>
@@ -343,14 +343,14 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
                         </h2>
 
                         {reviews.length === 0 ? (
-                            <div className="p-16 text-center border border-white/5 rounded-3xl bg-white/[0.02] backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+                            <div className="p-16 text-center border border-white/5 rounded-3xl bg-[#050505]/95 md:bg-white/[0.02] md:backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
                                 <p className="text-xl font-bold text-white/30 uppercase tracking-widest">No Reviews Yet</p>
                                 <p className="text-xs text-white/20 uppercase tracking-[0.2em] mt-4">Be the first to share your thoughts.</p>
                             </div>
                         ) : (
                             <div className="space-y-6">
                                 {reviews.map(review => (
-                                    <article key={review.id} className="p-8 border border-white/10 rounded-3xl bg-white/[0.03] backdrop-blur-2xl transition-all duration-300 hover:bg-white/[0.05] shadow-[0_8px_32px_rgba(0,0,0,0.5)] group">
+                                    <article key={review.id} className="p-8 border border-white/10 rounded-3xl bg-[#050505]/95 md:bg-white/[0.03] md:backdrop-blur-2xl transition-all duration-300 hover:bg-white/[0.05] shadow-[0_8px_32px_rgba(0,0,0,0.5)] group">
                                         <div className="flex items-start justify-between gap-4 mb-6">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-12 h-12 rounded-full flex items-center justify-center text-xl font-black bg-gradient-to-br from-white to-white/70 text-black shadow-lg">
@@ -374,7 +374,7 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
                         )}
                     </div>
 
-                    <div className="w-full lg:w-[600px] lg:sticky lg:top-32 self-start animate-fade-in p-8 md:p-12 border border-white/10 rounded-3xl bg-white/[0.02] backdrop-blur-[40px] shadow-[0_32px_64px_rgba(0,0,0,0.8)]">
+                    <div className="w-full lg:w-[600px] lg:sticky lg:top-32 self-start animate-fade-in p-8 md:p-12 border border-white/10 rounded-3xl bg-[#050505]/95 md:bg-white/[0.02] md:backdrop-blur-[40px] shadow-[0_32px_64px_rgba(0,0,0,0.8)]">
                         <ReviewForm
                             movieId={localMovie?.id}
                             tmdbId={tmdbData?.id}

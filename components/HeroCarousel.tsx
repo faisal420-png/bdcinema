@@ -130,7 +130,7 @@ export function HeroCarousel({ items, genreMap }: { items: TmdbResult[], genreMa
                                     <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                                     Play Trailer
                                 </Link>
-                                <button className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md text-white border border-white/20 active:scale-95 transition-transform md:hidden">
+                                <button className="w-12 h-12 flex items-center justify-center rounded-full bg-white/20 md:bg-white/10 md:backdrop-blur-md text-white border border-white/20 active:scale-95 transition-transform md:hidden">
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/></svg>
                                 </button>
                             </div>

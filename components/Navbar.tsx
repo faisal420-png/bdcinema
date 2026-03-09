@@ -52,7 +52,7 @@ export function Navbar() {
                 className={`hidden md:block fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-spring ${scrolled ? 'py-2' : 'py-4'}`}
             >
                 <div className={`max-w-6xl mx-auto mx-4 sm:mx-6 lg:mx-auto px-4 sm:px-6 py-3 rounded-2xl transition-all duration-700 ease-spring ${scrolled
-                        ? 'liquid-glass-strong'
+                        ? 'bg-[#050505]/95 md:liquid-glass-strong'
                         : 'bg-transparent'
                     }`}>
                     <div className="flex items-center justify-between gap-4">

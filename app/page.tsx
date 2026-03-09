@@ -176,7 +176,7 @@ export default async function HomePage() {
 
                 {/* ──── THE METER (LIQUID GLASS) ──────────── */}
                 <section className="mb-32 mt-16 max-w-7xl mx-auto px-6 sm:px-10">
-                    <div className="relative rounded-3xl border border-white/10 p-10 sm:p-16 bg-white/[0.02] backdrop-blur-[40px] shadow-[0_8px_32px_rgba(0,0,0,0.5)] flex flex-col lg:flex-row gap-16 items-center overflow-hidden group">
+                    <div className="relative rounded-3xl border border-white/10 p-10 sm:p-16 bg-[#050505]/95 md:bg-white/[0.02] md:backdrop-blur-[40px] shadow-[0_8px_32px_rgba(0,0,0,0.5)] flex flex-col lg:flex-row gap-16 items-center overflow-hidden group">
                         <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                         <div className="lg:w-1/3 relative z-10">
                             <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tighter uppercase mb-4 drop-shadow-md">The Meter</h2>
@@ -191,7 +191,7 @@ export default async function HomePage() {
                                 { label: 'GO FOR IT', style: 'border-blue-400/50 text-blue-400 hover:shadow-[0_0_20px_-5px_rgba(96,165,250,0.4)] hover:bg-blue-400/10', textStyle: 'text-white/70 group-hover:text-blue-100/80', desc: 'Solid pick. Clear schedule.' },
                                 { label: 'PERFECTION', style: 'border-green-400/50 text-green-400 hover:shadow-[0_0_20px_-5px_rgba(74,222,128,0.4)] hover:bg-green-400/10', textStyle: 'text-white/90 group-hover:text-green-100/90', desc: 'Masterpiece. Required.' },
                             ].map(t => (
-                                <div key={t.label} className={`group rounded-2xl border p-6 transition-all duration-500 cursor-default bg-black/20 backdrop-blur-md ${t.style}`}>
+                                <div key={t.label} className={`group rounded-2xl border p-6 transition-all duration-500 cursor-default bg-[#050505]/95 md:bg-black/20 md:backdrop-blur-md ${t.style}`}>
                                     <p className="text-sm font-black tracking-[0.2em] mb-3">{t.label}</p>
                                     <p className={`text-xs font-medium tracking-wide leading-relaxed transition-colors duration-500 ${t.textStyle}`}>
                                         {t.desc}

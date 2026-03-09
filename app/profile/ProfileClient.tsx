@@ -110,7 +110,7 @@ export default function ProfileClient({ user, reviews, children }: ProfileProps)
                     {/* Glowing Core Background entirely based on rank */}
                     <div className={`absolute inset-0 bg-gradient-to-r ${rank.color} blur-[120px] opacity-[0.15] rounded-[3rem] -z-10 transition-all duration-1000 group-hover:opacity-[0.25]`} />
 
-                    <div className="bg-transparent md:bg-[#050505]/80 md:backdrop-blur-[80px] md:shadow-2xl md:border border-white/[0.08] md:rounded-[2.5rem] p-0 md:p-8 sm:p-12 overflow-hidden relative flex flex-col gap-10">
+                    <div className="bg-[#050505]/95 md:bg-[#050505]/80 md:backdrop-blur-[80px] md:shadow-2xl md:border border-white/[0.08] md:rounded-[2.5rem] p-0 md:p-8 sm:p-12 overflow-hidden relative flex flex-col gap-10">
                         {/* Shimmer Effect */}
                         <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-30 pointer-events-none" />
 
@@ -202,21 +202,21 @@ export default function ProfileClient({ user, reviews, children }: ProfileProps)
 
                         {/* Stats Matrix Grid */}
                         <div className="grid grid-cols-3 gap-3 md:gap-6 relative z-10 pt-4 w-full">
-                            <div className="bg-black/50 backdrop-blur-xl rounded-xl md:rounded-[1.5rem] p-3 md:p-6 border border-white/5 shadow-inner hover:bg-white/[0.02] hover:border-white/20 transition-all duration-300 relative overflow-hidden group/card flex flex-col items-center md:items-start text-center md:text-left justify-center md:justify-start">
+                            <div className="bg-[#050505]/95 md:bg-black/50 md:backdrop-blur-xl rounded-xl md:rounded-[1.5rem] p-3 md:p-6 border border-white/5 shadow-inner hover:bg-white/[0.02] hover:border-white/20 transition-all duration-300 relative overflow-hidden group/card flex flex-col items-center md:items-start text-center md:text-left justify-center md:justify-start">
                                 <div className="absolute inset-0 bg-gradient-to-br from-[#00f5ff]/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                                 <span className="flex flex-col md:flex-row items-center gap-1 md:gap-2 text-[8px] md:text-[10px] font-black text-[#00f5ff] uppercase tracking-[0.2em] md:tracking-[0.3em] mb-2 md:mb-4">
                                     <span className="hidden md:block w-1.5 h-1.5 rounded-full bg-[#00f5ff]/50 shadow-[0_0_5px_currentColor]"></span> Vol. Logged
                                 </span>
                                 <span className="text-3xl md:text-5xl font-black text-white tracking-tighter leading-none">{reviews.length} <span className="text-[10px] md:text-lg text-white/20 tracking-widest block md:inline md:pl-1">TITLES</span></span>
                             </div>
-                            <div className="bg-black/50 backdrop-blur-xl rounded-xl md:rounded-[1.5rem] p-3 md:p-6 border border-white/5 shadow-inner hover:bg-white/[0.02] hover:border-white/20 transition-all duration-300 relative overflow-hidden group/card flex flex-col items-center md:items-start text-center md:text-left justify-center md:justify-start">
+                            <div className="bg-[#050505]/95 md:bg-black/50 md:backdrop-blur-xl rounded-xl md:rounded-[1.5rem] p-3 md:p-6 border border-white/5 shadow-inner hover:bg-white/[0.02] hover:border-white/20 transition-all duration-300 relative overflow-hidden group/card flex flex-col items-center md:items-start text-center md:text-left justify-center md:justify-start">
                                 <div className="absolute inset-0 bg-gradient-to-br from-[#ff2d78]/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                                 <span className="flex flex-col md:flex-row items-center gap-1 md:gap-2 text-[8px] md:text-[10px] font-black text-[#ff2d78] uppercase tracking-[0.2em] md:tracking-[0.3em] mb-2 md:mb-4">
                                     <span className="hidden md:block w-1.5 h-1.5 rounded-full bg-[#ff2d78]/50 shadow-[0_0_5px_currentColor]"></span> Top Rating
                                 </span>
                                 <span className="text-sm md:text-2xl font-black text-white tracking-tight leading-none block md:mt-3 break-words max-w-full">{mostGivenRating}</span>
                             </div>
-                            <div className="bg-black/50 backdrop-blur-xl rounded-xl md:rounded-[1.5rem] p-3 md:p-6 border border-white/5 shadow-inner hover:bg-white/[0.02] hover:border-white/20 transition-all duration-300 relative overflow-hidden group/card flex flex-col items-center md:items-start text-center md:text-left justify-center md:justify-start">
+                            <div className="bg-[#050505]/95 md:bg-black/50 md:backdrop-blur-xl rounded-xl md:rounded-[1.5rem] p-3 md:p-6 border border-white/5 shadow-inner hover:bg-white/[0.02] hover:border-white/20 transition-all duration-300 relative overflow-hidden group/card flex flex-col items-center md:items-start text-center md:text-left justify-center md:justify-start">
                                 <div className="absolute inset-0 bg-gradient-to-br from-[#39ff14]/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                                 <span className="flex flex-col md:flex-row items-center gap-1 md:gap-2 text-[8px] md:text-[10px] font-black text-[#39ff14] uppercase tracking-[0.2em] md:tracking-[0.3em] mb-2 md:mb-4">
                                     <span className="hidden md:block w-1.5 h-1.5 rounded-full bg-[#39ff14]/50 shadow-[0_0_5px_currentColor]"></span> Since
@@ -269,7 +269,7 @@ export default function ProfileClient({ user, reviews, children }: ProfileProps)
 
                                             {/* Top Right Meter Badge */}
                                             <div className="absolute top-3 right-3 z-20">
-                                                <span className={`text-[9px] font-bold uppercase tracking-[0.2em] px-2 py-1.5 rounded-md backdrop-blur-md shadow-lg ${badgeColor}`}>
+                                                <span className={`text-[9px] font-bold uppercase tracking-[0.2em] px-2 py-1.5 rounded-md bg-black/80 md:bg-transparent md:backdrop-blur-md shadow-lg ${badgeColor}`}>
                                                     {review.meter_rating.replace(/_/g, ' ')}
                                                 </span>
                                             </div>
