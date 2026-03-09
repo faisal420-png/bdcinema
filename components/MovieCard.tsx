@@ -17,6 +17,7 @@ interface TmdbCardProps {
     customBadge?: string;
     genres?: string[];
     overview?: string | null;
+    index?: number;
 }
 
 function AbstractPlaceholder({ title }: { title: string }) {
@@ -28,7 +29,7 @@ function AbstractPlaceholder({ title }: { title: string }) {
     );
 }
 
-export function TmdbCard({ id, title, posterPath, year, voteAverage, mediaType, isLocal, localId, customBadge, genres, overview }: TmdbCardProps) {
+export function TmdbCard({ id, title, posterPath, year, voteAverage, mediaType, isLocal, localId, customBadge, genres, overview, index }: TmdbCardProps) {
     const [isHovered, setIsHovered] = useState(false);
     const [glowColor, setGlowColor] = useState('rgba(139, 92, 246, 0.15)');
     const imgRef = useRef<HTMLImageElement>(null);
@@ -61,8 +62,15 @@ export function TmdbCard({ id, title, posterPath, year, voteAverage, mediaType, 
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={() => setIsHovered(false)}
                 className="relative aspect-[2/3] w-full rounded-2xl overflow-hidden cursor-pointer"
-                whileHover={{ scale: 1.04 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                initial={{ opacity: 0, x: 20, scale: 0.95 }}
+                whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                viewport={{ once: true, margin: "0px -40px 0px -40px" }}
+                whileHover={{ y: -6, scale: 1.03, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
+                transition={{
+                    duration: 0.5,
+                    delay: (index !== undefined && index < 8) ? index * 0.08 : 0,
+                    ease: [0.34, 1.56, 0.64, 1]
+                }}
                 style={{
                     boxShadow: isHovered
                         ? `0 20px 60px ${glowColor}, 0 0 40px ${glowColor}`
@@ -70,7 +78,7 @@ export function TmdbCard({ id, title, posterPath, year, voteAverage, mediaType, 
                 }}
             >
                 {/* Glass border */}
-                <div className="absolute inset-0 rounded-2xl border border-white/[0.08] z-20 pointer-events-none transition-all duration-500 group-hover:border-white/[0.15]" />
+                <div className="absolute inset-0 rounded-2xl border border-white/[0.08] z-20 pointer-events-none transition-all duration-500 group-hover:border-white/[0.25] group-hover:bg-white/[0.03]" />
 
                 {/* Poster */}
                 {posterUrl ? (
@@ -82,6 +90,7 @@ export function TmdbCard({ id, title, posterPath, year, voteAverage, mediaType, 
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 240px"
                         unoptimized
+                        crossOrigin="anonymous"
                     />
                 ) : (
                     <AbstractPlaceholder title={title} />
@@ -97,7 +106,7 @@ export function TmdbCard({ id, title, posterPath, year, voteAverage, mediaType, 
                 </div>
 
                 {/* Hover Overlay */}
-                <div className={`absolute inset-0 z-20 transition-all duration-500 flex flex-col justify-end p-4 ${isHovered ? 'opacity-100' : 'opacity-0'
+                <div className={`absolute inset-0 z-20 transition-all duration-500 hidden md:flex flex-col justify-end p-4 ${isHovered ? 'md:opacity-100' : 'opacity-0'
                     }`}>
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
                     <div className="relative z-10">
@@ -185,7 +194,7 @@ export function MovieCard({ movie, index = 0 }: { movie: LocalMovie; index?: num
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={() => setIsHovered(false)}
                 className="relative aspect-[2/3] w-full rounded-2xl overflow-hidden cursor-pointer"
-                whileHover={{ scale: 1.04 }}
+                whileHover={{ y: -6, scale: 1.03, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
                 style={{
                     boxShadow: isHovered
                         ? `0 20px 60px ${glowColor}, 0 0 40px ${glowColor}`
@@ -193,7 +202,7 @@ export function MovieCard({ movie, index = 0 }: { movie: LocalMovie; index?: num
                 }}
             >
                 {/* Glass border */}
-                <div className="absolute inset-0 rounded-2xl border border-white/[0.08] z-20 pointer-events-none transition-all duration-500 group-hover:border-white/[0.15]" />
+                <div className="absolute inset-0 rounded-2xl border border-white/[0.08] z-20 pointer-events-none transition-all duration-500 group-hover:border-white/[0.25] group-hover:bg-white/[0.03]" />
 
                 {/* Poster */}
                 {movie.poster_url ? (
@@ -205,6 +214,7 @@ export function MovieCard({ movie, index = 0 }: { movie: LocalMovie; index?: num
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 240px"
                         unoptimized
+                        crossOrigin="anonymous"
                     />
                 ) : (
                     <AbstractPlaceholder title={movie.title} />
@@ -223,7 +233,7 @@ export function MovieCard({ movie, index = 0 }: { movie: LocalMovie; index?: num
                 </div>
 
                 {/* Hover Overlay */}
-                <div className={`absolute inset-0 z-20 transition-all duration-500 flex flex-col justify-end p-4 ${isHovered ? 'opacity-100' : 'opacity-0'
+                <div className={`absolute inset-0 z-20 transition-all duration-500 hidden md:flex flex-col justify-end p-4 ${isHovered ? 'md:opacity-100' : 'opacity-0'
                     }`}>
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
                     <div className="relative z-10">

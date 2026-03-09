@@ -110,13 +110,13 @@ export default function ProfileClient({ user, reviews, children }: ProfileProps)
                     {/* Glowing Core Background entirely based on rank */}
                     <div className={`absolute inset-0 bg-gradient-to-r ${rank.color} blur-[120px] opacity-[0.15] rounded-[3rem] -z-10 transition-all duration-1000 group-hover:opacity-[0.25]`} />
 
-                    <div className="bg-[#050505]/80 backdrop-blur-[80px] shadow-2xl border border-white/[0.08] rounded-[2.5rem] p-8 sm:p-12 overflow-hidden relative flex flex-col gap-10">
+                    <div className="bg-transparent md:bg-[#050505]/80 md:backdrop-blur-[80px] md:shadow-2xl md:border border-white/[0.08] md:rounded-[2.5rem] p-0 md:p-8 sm:p-12 overflow-hidden relative flex flex-col gap-10">
                         {/* Shimmer Effect */}
                         <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-30 pointer-events-none" />
 
                         <div className="flex flex-col lg:flex-row items-center justify-between gap-10 relative z-10 w-full">
                             {/* Left: User Avatar & Intro */}
-                            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-8 w-full lg:w-auto">
+                            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-6 md:gap-8 w-full lg:w-auto">
                                 <div className="relative cursor-pointer" onClick={() => fileInputRef.current?.click()}>
                                     <input
                                         ref={fileInputRef}
@@ -126,12 +126,12 @@ export default function ProfileClient({ user, reviews, children }: ProfileProps)
                                         onChange={handleAvatarUpload}
                                     />
                                     <div className={`absolute inset-0 bg-gradient-to-r ${rank.color} blur-2xl opacity-40 group-hover:opacity-80 transition-opacity duration-700 animate-pulse`} />
-                                    <div className="relative w-32 h-32 rounded-[2rem] bg-black border border-white/20 flex items-center justify-center overflow-hidden shrink-0 shadow-[0_0_50px_rgba(0,0,0,0.8)] z-10 transition-transform duration-500 group-hover:scale-[1.05] group-hover:rotate-3 rotate-0">
+                                    <div className="relative w-28 h-28 md:w-32 md:h-32 rounded-full md:rounded-[2rem] bg-black border border-white/20 flex items-center justify-center overflow-hidden shrink-0 shadow-[0_0_50px_rgba(0,0,0,0.8)] z-10 transition-transform duration-500 group-hover:scale-[1.05] group-hover:rotate-3 rotate-0 mx-auto md:mx-0">
                                         <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-50 pointer-events-none z-20" />
                                         {avatarUrl ? (
                                             <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" />
                                         ) : (
-                                            <span className="text-6xl font-black tracking-widest bg-clip-text text-transparent bg-gradient-to-br from-white to-neutral-600">
+                                            <span className="text-5xl md:text-6xl font-black tracking-widest bg-clip-text text-transparent bg-gradient-to-br from-white to-neutral-600">
                                                 {displayName.charAt(0).toUpperCase()}
                                             </span>
                                         )}
@@ -141,31 +141,31 @@ export default function ProfileClient({ user, reviews, children }: ProfileProps)
                                                 <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                             ) : (
                                                 <>
-                                                    <svg className="w-7 h-7 text-white/80 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                    <svg className="w-6 h-6 md:w-7 md:h-7 text-white/80 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
                                                     </svg>
-                                                    <span className="text-[9px] font-bold text-white/60 uppercase tracking-widest">Change</span>
+                                                    <span className="text-[8px] md:text-[9px] font-bold text-white/60 uppercase tracking-widest">Change</span>
                                                 </>
                                             )}
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex-1 lg:flex-initial flex flex-col justify-center mt-2">
+                                <div className="flex-1 lg:flex-initial flex flex-col items-center sm:items-start justify-center mt-2">
                                     <div className="flex justify-center sm:justify-start">
-                                        <span className={`inline-block px-3 py-1 mb-4 rounded-md bg-white/5 border border-white/10 text-[9px] font-black tracking-[0.4em] text-white/60 uppercase shadow-inner`}>
+                                        <span className={`inline-block px-3 py-1 mb-3 md:mb-4 rounded-md bg-white/5 border border-white/10 text-[9px] font-black tracking-[0.4em] text-white/60 uppercase shadow-inner`}>
                                             Critic Dashboard
                                         </span>
                                     </div>
-                                    <h1 className="text-5xl sm:text-7xl font-black text-white tracking-tighter uppercase leading-[0.9] drop-shadow-2xl">
+                                    <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-white tracking-tighter uppercase leading-[0.9] drop-shadow-2xl">
                                         {displayName}
                                     </h1>
                                 </div>
                             </div>
 
                             {/* Right: The Critic Cred Engine */}
-                            <div className="w-full lg:w-auto flex justify-center lg:justify-end shrink-0">
-                                <div className={`relative px-10 py-8 rounded-[2rem] bg-black border border-white/20 shadow-[0_0_80px_rgba(0,0,0,0.4)] overflow-hidden hover:scale-[1.02] transition-transform duration-500 w-full sm:w-auto min-w-[320px] text-center lg:text-right`}>
+                            <div className="w-full lg:w-auto flex justify-center lg:justify-end shrink-0 mt-4 md:mt-0">
+                                <div className={`relative px-6 py-6 md:px-10 md:py-8 rounded-[2rem] bg-black border border-white/20 shadow-[0_0_80px_rgba(0,0,0,0.4)] overflow-hidden hover:scale-[1.02] transition-transform duration-500 w-full md:w-auto md:min-w-[320px] text-center lg:text-right`}>
                                     <div className={`absolute inset-0 opacity-20 bg-gradient-to-r ${rank.color} transition-all duration-700`} />
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
 
@@ -201,27 +201,27 @@ export default function ProfileClient({ user, reviews, children }: ProfileProps)
                         </div>
 
                         {/* Stats Matrix Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10 pt-4 w-full">
-                            <div className="bg-black/50 backdrop-blur-xl rounded-[1.5rem] p-6 border border-white/5 shadow-inner hover:bg-white/[0.02] hover:border-white/20 transition-all duration-300 relative overflow-hidden group/card text-center md:text-left">
+                        <div className="grid grid-cols-3 gap-3 md:gap-6 relative z-10 pt-4 w-full">
+                            <div className="bg-black/50 backdrop-blur-xl rounded-xl md:rounded-[1.5rem] p-3 md:p-6 border border-white/5 shadow-inner hover:bg-white/[0.02] hover:border-white/20 transition-all duration-300 relative overflow-hidden group/card flex flex-col items-center md:items-start text-center md:text-left justify-center md:justify-start">
                                 <div className="absolute inset-0 bg-gradient-to-br from-[#00f5ff]/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
-                                <span className="flex items-center justify-center md:justify-start gap-2 text-[10px] font-black text-[#00f5ff] uppercase tracking-[0.3em] mb-4">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#00f5ff]/50 shadow-[0_0_5px_currentColor]"></span> Vol. Logged
+                                <span className="flex flex-col md:flex-row items-center gap-1 md:gap-2 text-[8px] md:text-[10px] font-black text-[#00f5ff] uppercase tracking-[0.2em] md:tracking-[0.3em] mb-2 md:mb-4">
+                                    <span className="hidden md:block w-1.5 h-1.5 rounded-full bg-[#00f5ff]/50 shadow-[0_0_5px_currentColor]"></span> Vol. Logged
                                 </span>
-                                <span className="text-5xl font-black text-white tracking-tighter leading-none">{reviews.length} <span className="text-lg text-white/20 tracking-widest pl-1">TITLES</span></span>
+                                <span className="text-3xl md:text-5xl font-black text-white tracking-tighter leading-none">{reviews.length} <span className="text-[10px] md:text-lg text-white/20 tracking-widest block md:inline md:pl-1">TITLES</span></span>
                             </div>
-                            <div className="bg-black/50 backdrop-blur-xl rounded-[1.5rem] p-6 border border-white/5 shadow-inner hover:bg-white/[0.02] hover:border-white/20 transition-all duration-300 relative overflow-hidden group/card text-center md:text-left">
+                            <div className="bg-black/50 backdrop-blur-xl rounded-xl md:rounded-[1.5rem] p-3 md:p-6 border border-white/5 shadow-inner hover:bg-white/[0.02] hover:border-white/20 transition-all duration-300 relative overflow-hidden group/card flex flex-col items-center md:items-start text-center md:text-left justify-center md:justify-start">
                                 <div className="absolute inset-0 bg-gradient-to-br from-[#ff2d78]/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
-                                <span className="flex items-center justify-center md:justify-start gap-2 text-[10px] font-black text-[#ff2d78] uppercase tracking-[0.3em] mb-4">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#ff2d78]/50 shadow-[0_0_5px_currentColor]"></span> Top Rating
+                                <span className="flex flex-col md:flex-row items-center gap-1 md:gap-2 text-[8px] md:text-[10px] font-black text-[#ff2d78] uppercase tracking-[0.2em] md:tracking-[0.3em] mb-2 md:mb-4">
+                                    <span className="hidden md:block w-1.5 h-1.5 rounded-full bg-[#ff2d78]/50 shadow-[0_0_5px_currentColor]"></span> Top Rating
                                 </span>
-                                <span className="text-2xl font-black text-white tracking-tight leading-none truncate block mt-3">{mostGivenRating}</span>
+                                <span className="text-sm md:text-2xl font-black text-white tracking-tight leading-none block md:mt-3 break-words max-w-full">{mostGivenRating}</span>
                             </div>
-                            <div className="bg-black/50 backdrop-blur-xl rounded-[1.5rem] p-6 border border-white/5 shadow-inner hover:bg-white/[0.02] hover:border-white/20 transition-all duration-300 relative overflow-hidden group/card text-center md:text-left">
+                            <div className="bg-black/50 backdrop-blur-xl rounded-xl md:rounded-[1.5rem] p-3 md:p-6 border border-white/5 shadow-inner hover:bg-white/[0.02] hover:border-white/20 transition-all duration-300 relative overflow-hidden group/card flex flex-col items-center md:items-start text-center md:text-left justify-center md:justify-start">
                                 <div className="absolute inset-0 bg-gradient-to-br from-[#39ff14]/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
-                                <span className="flex items-center justify-center md:justify-start gap-2 text-[10px] font-black text-[#39ff14] uppercase tracking-[0.3em] mb-4">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#39ff14]/50 shadow-[0_0_5px_currentColor]"></span> Member Since
+                                <span className="flex flex-col md:flex-row items-center gap-1 md:gap-2 text-[8px] md:text-[10px] font-black text-[#39ff14] uppercase tracking-[0.2em] md:tracking-[0.3em] mb-2 md:mb-4">
+                                    <span className="hidden md:block w-1.5 h-1.5 rounded-full bg-[#39ff14]/50 shadow-[0_0_5px_currentColor]"></span> Since
                                 </span>
-                                <span className="text-4xl font-black text-white tracking-tight leading-none mt-1 inline-block">{memberSince}</span>
+                                <span className="text-2xl md:text-4xl font-black text-white tracking-tight leading-none md:mt-1 inline-block">{memberSince}</span>
                             </div>
                         </div>
                     </div>
@@ -239,7 +239,7 @@ export default function ProfileClient({ user, reviews, children }: ProfileProps)
                     </div>
 
                     {reviews.length > 0 ? (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-10">
+                        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 gap-x-3 gap-y-6 md:gap-x-6 md:gap-y-10">
                             {reviews.map((review) => {
                                 const posterUrl = review.movie.poster_url
                                     ? (review.movie.poster_url.startsWith('http') ? review.movie.poster_url : `https://image.tmdb.org/t/p/w500${review.movie.poster_url}`)
@@ -278,11 +278,11 @@ export default function ProfileClient({ user, reviews, children }: ProfileProps)
                                             <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                                         </div>
 
-                                        <div className="flex flex-col gap-1 px-1">
-                                            <h3 className="text-sm font-bold text-white truncate drop-shadow-md">
+                                        <div className="flex flex-col gap-1 px-1 mt-1 md:mt-0">
+                                            <h3 className="text-[10px] md:text-sm font-bold text-white leading-tight md:truncate drop-shadow-md line-clamp-2 md:line-clamp-none">
                                                 {review.movie.title}
                                             </h3>
-                                            <p className="text-[10px] text-white/50 font-space tracking-widest uppercase">
+                                            <p className="text-[8px] md:text-[10px] text-white/50 font-space tracking-widest uppercase mt-0.5 md:mt-0">
                                                 {new Date(review.created_at).toLocaleDateString()}
                                             </p>
                                         </div>

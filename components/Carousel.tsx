@@ -74,10 +74,10 @@ export function Carousel({ title, subtitle, children }: { title: string; subtitl
                 <div
                     ref={scrollRef}
                     onScroll={checkScroll}
-                    className="flex gap-4 overflow-x-auto pb-6 px-6 sm:px-10 scrollbar-hide snap-x snap-mandatory"
+                    className="flex gap-4 overflow-x-auto pb-6 px-0 md:px-10 scrollbar-hide snap-x snap-mandatory"
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
-                    <div className="flex gap-4 w-max">
+                    <div className="flex gap-4 w-max px-6 md:px-0">
                         {children}
                     </div>
                 </div>

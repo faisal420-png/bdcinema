@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
+import { MobileNav } from "@/components/MobileNav";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/lib/auth";
 
@@ -33,7 +34,8 @@ export default async function RootLayout({
                 <SessionProvider session={session}>
                     <div className="relative min-h-screen flex flex-col z-10">
                         <Navbar />
-                        <main className="flex-1">
+                        <MobileNav />
+                        <main className="flex-1 pb-24 pb-safe md:pb-0">
                             {children}
                         </main>
                         <footer className="relative mt-16">

@@ -8,7 +8,7 @@ import { Carousel } from '@/components/Carousel';
 
 export const dynamic = 'force-dynamic';
 
-function TmdbCarouselCard({ item, typeLabel, genreMap }: { item: TmdbResult; typeLabel?: string; genreMap?: Record<number, string> }) {
+function TmdbCarouselCard({ item, typeLabel, genreMap, index }: { item: TmdbResult; typeLabel?: string; genreMap?: Record<number, string>; index?: number }) {
     const title = item.title || item.name || 'Unknown';
     const year = item.release_date?.split('-')[0] || item.first_air_date?.split('-')[0] || null;
     const mediaType = item.media_type || (item.first_air_date ? 'tv' : 'movie');
@@ -25,6 +25,7 @@ function TmdbCarouselCard({ item, typeLabel, genreMap }: { item: TmdbResult; typ
                 customBadge={typeLabel}
                 genres={genres}
                 overview={item.overview || undefined}
+                index={index}
             />
         </div>
     );
@@ -55,13 +56,22 @@ export default async function HomePage() {
         <div className="min-h-screen bg-black">
             <HeroCarousel items={trending.slice(0, 6)} genreMap={genreMap} />
 
-            <div className="w-full relative z-10 -mt-24 pt-24 pb-32">
+            <div className="w-full relative z-10 -mt-8 md:-mt-24 pt-12 md:pt-24 pb-32">
+
+                {/* Mobile-only Category Pills */}
+                <div className="md:hidden flex gap-3 overflow-x-auto px-6 pb-6 mb-4 scrollbar-hide snap-x" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                    {['Trending', 'Action', 'Drama', 'Sci-Fi', 'Romance', 'Comedy'].map((cat, i) => (
+                        <button key={cat} className={`snap-start whitespace-nowrap px-5 py-2 rounded-full text-xs font-bold tracking-wider transition-colors ${i === 0 ? 'bg-white text-black' : 'bg-surface-100 border border-white/10 text-white/70 hover:text-white hover:bg-white/10'}`}>
+                            {cat}
+                        </button>
+                    ))}
+                </div>
 
                 {/* ──── TRENDING NOW ───────────────── */}
                 {trending.length > 0 && (
                     <Carousel title="Trending" subtitle="The World Is Watching">
-                        {trending.slice(0, 20).map(item => (
-                            <TmdbCarouselCard key={item.id} item={item} typeLabel={item.media_type === 'tv' ? 'Series' : 'Film'} genreMap={genreMap} />
+                        {trending.slice(0, 20).map((item, i) => (
+                            <TmdbCarouselCard key={item.id} item={item} typeLabel={item.media_type === 'tv' ? 'Series' : 'Film'} genreMap={genreMap} index={i} />
                         ))}
                     </Carousel>
                 )}
@@ -96,8 +106,8 @@ export default async function HomePage() {
                         {/* TMDB Bangladeshi Trending Movies */}
                         {bdMovies.length > 0 && (
                             <Carousel title="Bangladeshi Films" subtitle="Popular Deshi Movies">
-                                {bdMovies.slice(0, 20).map(item => (
-                                    <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'movie' }} typeLabel="Film" genreMap={genreMap} />
+                                {bdMovies.slice(0, 20).map((item, i) => (
+                                    <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'movie' }} typeLabel="Film" genreMap={genreMap} index={i} />
                                 ))}
                             </Carousel>
                         )}
@@ -105,8 +115,8 @@ export default async function HomePage() {
                         {/* TMDB Bangladeshi Series */}
                         {bdSeries.length > 0 && (
                             <Carousel title="Bangladeshi Series" subtitle="Trending Deshi Web Series & TV">
-                                {bdSeries.slice(0, 20).map(item => (
-                                    <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'tv' }} typeLabel="Series" genreMap={genreMap} />
+                                {bdSeries.slice(0, 20).map((item, i) => (
+                                    <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'tv' }} typeLabel="Series" genreMap={genreMap} index={i} />
                                 ))}
                             </Carousel>
                         )}
@@ -116,8 +126,8 @@ export default async function HomePage() {
                 {/* ──── GENRE SPOTLIGHTS ──────────────────── */}
                 {actionMovies.length > 0 && (
                     <Carousel title="High-Octane" subtitle="Pure Adrenaline Action">
-                        {actionMovies.slice(0, 20).map(item => (
-                            <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'movie' }} genreMap={genreMap} />
+                        {actionMovies.slice(0, 20).map((item, i) => (
+                            <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'movie' }} genreMap={genreMap} index={i} />
                         ))}
                     </Carousel>
                 )}
@@ -125,16 +135,16 @@ export default async function HomePage() {
                 {/* ──── INDIAN CINEMA REGIONAL SPOTLIGHT ──── */}
                 {inMovies.length > 0 && (
                     <Carousel title="India" subtitle="Subcontinental Blockbusters">
-                        {inMovies.slice(0, 20).map(item => (
-                            <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'movie' }} typeLabel="Bollywood / South" genreMap={genreMap} />
+                        {inMovies.slice(0, 20).map((item, i) => (
+                            <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'movie' }} typeLabel="Bollywood / South" genreMap={genreMap} index={i} />
                         ))}
                     </Carousel>
                 )}
 
                 {scifiFantasy.length > 0 && (
                     <Carousel title="Sci-Fi & Fantasy" subtitle="Beyond Imagination">
-                        {scifiFantasy.slice(0, 20).map(item => (
-                            <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'movie' }} genreMap={genreMap} />
+                        {scifiFantasy.slice(0, 20).map((item, i) => (
+                            <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'movie' }} genreMap={genreMap} index={i} />
                         ))}
                     </Carousel>
                 )}
@@ -142,24 +152,24 @@ export default async function HomePage() {
                 {/* ──── GLOBAL SERIES ──────────────────── */}
                 {series.length > 0 && (
                     <Carousel title="Bingeworthy" subtitle="Critically Acclaimed Series">
-                        {series.slice(0, 20).map(item => (
-                            <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'tv' }} typeLabel="Series" genreMap={genreMap} />
+                        {series.slice(0, 20).map((item, i) => (
+                            <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'tv' }} typeLabel="Series" genreMap={genreMap} index={i} />
                         ))}
                     </Carousel>
                 )}
 
                 {dramaMovies.length > 0 && (
                     <Carousel title="Masterpieces" subtitle="Dramatic Storytelling">
-                        {dramaMovies.slice(0, 20).map(item => (
-                            <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'movie' }} genreMap={genreMap} />
+                        {dramaMovies.slice(0, 20).map((item, i) => (
+                            <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'movie' }} genreMap={genreMap} index={i} />
                         ))}
                     </Carousel>
                 )}
 
                 {inSeries.length > 0 && (
                     <Carousel title="Indian TV" subtitle="Viral Regional Series">
-                        {inSeries.slice(0, 20).map(item => (
-                            <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'tv' }} typeLabel="Series" genreMap={genreMap} />
+                        {inSeries.slice(0, 20).map((item, i) => (
+                            <TmdbCarouselCard key={item.id} item={{ ...item, media_type: 'tv' }} typeLabel="Series" genreMap={genreMap} index={i} />
                         ))}
                     </Carousel>
                 )}

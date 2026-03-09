@@ -97,13 +97,13 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
     return (
         <div className="min-h-screen bg-black overflow-x-hidden">
             {/* ──── HERO SECTION ──────────────────────── */}
-            <div className="relative h-[60vh] md:h-[80vh] w-full overflow-hidden flex items-center justify-center">
-                {(m.backdrop_url || m.poster_url) ? (
+            <div className="relative h-[65vh] md:h-[80vh] w-full overflow-hidden flex items-end justify-center pb-8 md:pb-0 md:items-center">
+                {(m.poster_url || m.backdrop_url) ? (
                     <Image
-                        src={m.backdrop_url || m.poster_url!}
+                        src={m.poster_url || m.backdrop_url!}
                         alt={m.title}
                         fill
-                        className="object-cover object-top opacity-30 grayscale-[0.5] mix-blend-luminosity scale-105"
+                        className="object-cover object-top opacity-70 md:opacity-30 md:grayscale-[0.5] mix-blend-luminosity scale-105"
                         sizes="100vw"
                         priority
                         unoptimized
@@ -111,19 +111,77 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
                 ) : (
                     <div className="absolute inset-0 bg-neutral-950" />
                 )}
+                
+                {/* Mobile Top App Bar (Back Button) */}
+                <div className="absolute top-0 left-0 right-0 p-6 pt-safe z-30 flex justify-between md:hidden">
+                    <Link href="/" className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white border border-white/10 active:scale-95 transition-transform">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7"/></svg>
+                    </Link>
+                </div>
+
                 {/* Cinematic Vignette */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-transparent to-black/90" />
+                <div className="absolute inset-x-0 bottom-0 h-[80%] bg-gradient-to-t from-black via-black/80 to-transparent" />
+                <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-black/90 via-transparent to-black/90" />
 
                 {/* Abstract overlay */}
                 <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at center, #ffffff 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
+                
+                {/* Mobile-only Centered Metadata overlapping Hero */}
+                <div className="relative z-20 md:hidden flex flex-col items-center text-center px-6 w-full -mb-6">
+                    <h1 className="text-4xl sm:text-5xl font-display font-black text-white leading-[0.9] tracking-tighter uppercase mb-3 drop-shadow-xl text-balance">
+                        {m.title}
+                    </h1>
+                    
+                    <div className="flex flex-wrap justify-center items-center gap-2 mb-6">
+                        <span className="text-[10px] font-bold text-white/70">{m.release_year}</span>
+                        {genres.length > 0 && <span className="w-1 h-1 rounded-full bg-white/30" />}
+                        {genres.length > 0 && <span className="text-[10px] font-medium text-white/70">{genres[0]}</span>}
+                        {runtime && <span className="w-1 h-1 rounded-full bg-white/30" />}
+                        {runtime && <span className="text-[10px] font-bold text-white/70 tracking-widest">{runtime} MIN</span>}
+                    </div>
+
+                    {/* Mobile Action Row */}
+                    <div className="w-full flex flex-col gap-4 mb-4">
+                        <button className="w-full bg-rose hover:bg-rose-dark active:scale-95 text-white rounded-xl py-3.5 text-sm font-bold tracking-wide flex items-center justify-center gap-2 transition-transform shadow-[0_4px_20px_rgba(244,63,94,0.4)]">
+                            <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            Play
+                        </button>
+                        <button className="w-full bg-surface-100 hover:bg-surface-200 active:scale-95 text-white border border-white/10 rounded-xl py-3.5 text-sm font-bold tracking-wide flex items-center justify-center gap-2 transition-transform">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                            Download
+                        </button>
+                    </div>
+
+                    <div className="flex justify-around items-center w-full py-4 px-2">
+                        <div className="flex flex-col items-center gap-1.5 touch-action group cursor-pointer">
+                            {userId && localMovie ? (
+                                <WatchlistToggle movieId={localMovie.id} initialSaved={isSaved} iconOnly={true} />
+                            ) : (
+                                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 border border-white/10"><svg className="w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/></svg></div>
+                            )}
+                            <span className="text-[10px] font-medium text-white/50 group-hover:text-white transition-colors">My List</span>
+                        </div>
+                        <div className="flex flex-col items-center gap-1.5 touch-action group cursor-pointer">
+                            <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 border border-white/10">
+                                <svg className="w-5 h-5 text-white/50 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
+                            </div>
+                            <span className="text-[10px] font-medium text-white/50 group-hover:text-white transition-colors">Rate</span>
+                        </div>
+                        <div className="flex flex-col items-center gap-1.5 touch-action group cursor-pointer">
+                            <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 border border-white/10">
+                                <svg className="w-5 h-5 text-white/50 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                            </div>
+                            <span className="text-[10px] font-medium text-white/50 group-hover:text-white transition-colors">Share</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-6 sm:px-10 -mt-80 md:-mt-96 relative z-10">
+            <div className="max-w-7xl mx-auto px-6 sm:px-10 mt-12 md:-mt-96 relative z-10">
                 <div className="flex flex-col md:flex-row gap-12 lg:gap-20">
 
-                    {/* ──── LEFT: POSTER & ACTIONS ────────── */}
-                    <div className="flex-shrink-0 animate-fade-up flex flex-col items-center md:items-start" style={{ animationDelay: '100ms' }}>
+                    {/* ──── LEFT: DESKTOP POSTER ────────── */}
+                    <div className="hidden md:flex flex-shrink-0 animate-fade-up flex-col items-start" style={{ animationDelay: '100ms' }}>
                         <SharedPoster
                             id={localMovie ? localMovie.id : id}
                             title={m.title}
@@ -132,7 +190,7 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
                         />
 
                         {/* Watchlist Action */}
-                        <div className="mt-8 w-full md:w-80 flex justify-center">
+                        <div className="mt-8 w-80 flex justify-center">
                             {userId && localMovie ? (
                                 <WatchlistToggle movieId={localMovie.id} initialSaved={isSaved} />
                             ) : (
@@ -143,9 +201,9 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
                         </div>
                     </div>
 
-                    {/* ──── RIGHT: INFO & METERS ──────────── */}
-                    <div className="flex-1 pt-6 md:pt-16 animate-fade-up">
-                        <div className="flex flex-wrap items-center gap-3 mb-6">
+                    <div className="flex-1 pt-2 md:pt-16 animate-fade-up">
+                        {/* Desktop Metadata that is hidden on Mobile because it's in the Hero */}
+                        <div className="hidden md:flex flex-wrap items-center gap-3 mb-6">
                             <span className="px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] bg-white text-black mix-blend-screen rounded-full">
                                 {m.type === 'series' ? 'SERIES' : 'FILM'}
                             </span>
@@ -160,16 +218,16 @@ export default async function MovieDetailPage({ params, searchParams }: Props) {
                             )}
                         </div>
 
-                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.9] tracking-tighter uppercase mb-2">
+                        <h1 className="hidden md:block text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.9] tracking-tighter uppercase mb-2">
                             {m.title}
                         </h1>
                         {m.original_title && m.original_title !== m.title && (
-                            <p className="text-white/40 text-xl md:text-2xl font-bold tracking-tight mb-8">{m.original_title}</p>
+                            <p className="hidden md:block text-white/40 text-xl md:text-2xl font-bold tracking-tight mb-8">{m.original_title}</p>
                         )}
 
                         {/* Sleek Genre Meter Tag List */}
                         {genres.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mb-10">
+                            <div className="hidden md:flex flex-wrap gap-2 mb-10">
                                 {genres.map((g: string) => (
                                     <span key={g} className="px-4 py-1.5 text-xs font-black tracking-[0.2em] uppercase text-white border border-white/20 rounded-full shadow-[0_0_15px_-5px_rgba(255,255,255,0.2)] bg-white/5 backdrop-blur-md">
                                         {g}

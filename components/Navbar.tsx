@@ -4,6 +4,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { MagneticButton } from './MagneticButton';
 
 export function Navbar() {
     const { data: session } = useSession();
@@ -44,21 +45,28 @@ export function Navbar() {
 
     return (
         <>
-            <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-spring ${scrolled ? 'py-2' : 'py-4'}`}>
+            <motion.nav 
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
+                className={`hidden md:block fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-spring ${scrolled ? 'py-2' : 'py-4'}`}
+            >
                 <div className={`max-w-6xl mx-auto mx-4 sm:mx-6 lg:mx-auto px-4 sm:px-6 py-3 rounded-2xl transition-all duration-700 ease-spring ${scrolled
-                        ? 'liquid-glass-strong shadow-[0_8px_32px_rgba(0,0,0,0.5)]'
+                        ? 'liquid-glass-strong'
                         : 'bg-transparent'
                     }`}>
                     <div className="flex items-center justify-between gap-4">
                         {/* Logo */}
-                        <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
-                            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amethyst to-amethyst-dark flex items-center justify-center shadow-lg group-hover:shadow-amethyst-glow transition-shadow duration-500">
-                                <span className="text-white font-black text-xs">B</span>
-                            </div>
-                            <span className="font-display font-bold text-base text-white hidden sm:block">
-                                BD<span className="text-amethyst-light">Cinema</span>
-                            </span>
-                        </Link>
+                        <MagneticButton>
+                            <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
+                                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amethyst to-amethyst-dark flex items-center justify-center shadow-lg group-hover:shadow-amethyst-glow transition-shadow duration-500">
+                                    <span className="text-white font-black text-xs">B</span>
+                                </div>
+                                <span className="font-display font-bold text-base text-white hidden sm:block">
+                                    BD<span className="text-amethyst-light">Cinema</span>
+                                </span>
+                            </Link>
+                        </MagneticButton>
 
                         {/* Center Search */}
                         <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md mx-auto">
@@ -76,7 +84,7 @@ export function Navbar() {
                             </div>
                         </form>
 
-                        {/* Right Actions */}
+                                {/* Right Actions */}
                         <div className="flex items-center gap-2">
                             {session?.user ? (
                                 <>
@@ -112,7 +120,7 @@ export function Navbar() {
                                                     initial={{ opacity: 0, y: 8, scale: 0.95 }}
                                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                                     exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                                                    transition={{ duration: 0.2, ease: [0.34, 1.56, 0.64, 1] }}
+                                                    transition={{ type: "spring", stiffness: 350, damping: 25 }}
                                                     className="absolute right-0 top-full mt-2 w-52 rounded-2xl liquid-glass-strong overflow-hidden"
                                                 >
                                                     <div className="p-2">
@@ -135,73 +143,25 @@ export function Navbar() {
                                 </>
                             ) : (
                                 <div className="flex items-center gap-2">
-                                    <Link href="/login" className="glass-pill hover:bg-white/10 transition-all duration-300 text-white/70 hover:text-white">
-                                        Sign In
-                                    </Link>
-                                    <Link href="/register" className="glass-btn-primary glass-btn rounded-full px-4 py-2 text-xs font-bold tracking-wider">
-                                        Join
-                                    </Link>
+                                    <MagneticButton>
+                                        <Link href="/login" className="glass-pill hover:bg-white/10 transition-all duration-300 text-white/70 hover:text-white">
+                                            Sign In
+                                        </Link>
+                                    </MagneticButton>
+                                    <MagneticButton>
+                                        <Link href="/register" className="glass-btn-primary glass-btn rounded-full px-4 py-2 text-xs font-bold tracking-wider">
+                                            Join
+                                        </Link>
+                                    </MagneticButton>
                                 </div>
                             )}
-
-                            {/* Mobile Menu Toggle */}
-                            <button
-                                onClick={() => setMenuOpen(!menuOpen)}
-                                className="md:hidden glass-btn rounded-xl p-2"
-                            >
-                                <svg className="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    {menuOpen
-                                        ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                        : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                                    }
-                                </svg>
-                            </button>
                         </div>
                     </div>
                 </div>
-            </nav>
-
-            {/* Mobile Menu Overlay */}
-            <AnimatePresence>
-                {menuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="fixed inset-0 z-40 md:hidden"
-                    >
-                        <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={() => setMenuOpen(false)} />
-                        <motion.div
-                            initial={{ y: -20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            exit={{ y: -20, opacity: 0 }}
-                            transition={{ duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
-                            className="relative mt-20 mx-4 rounded-2xl liquid-glass-strong p-6"
-                        >
-                            <form onSubmit={handleSearch} className="mb-6">
-                                <input
-                                    type="text"
-                                    value={query}
-                                    onChange={(e) => setQuery(e.target.value)}
-                                    placeholder="Search..."
-                                    className="w-full glass-input rounded-xl px-4 py-3 text-sm"
-                                />
-                            </form>
-                            <div className="flex flex-col gap-2">
-                                <Link href="/" onClick={() => setMenuOpen(false)} className="px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/[0.06] transition-all duration-300">Home</Link>
-                                <Link href="/search" onClick={() => setMenuOpen(false)} className="px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/[0.06] transition-all duration-300">Explore</Link>
-                                {session?.user && (
-                                    <Link href="/profile" onClick={() => setMenuOpen(false)} className="px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/[0.06] transition-all duration-300">Profile</Link>
-                                )}
-                            </div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            </motion.nav>
 
             {/* Spacer for fixed nav */}
-            <div className="h-20" />
+            <div className="hidden md:block h-20" />
         </>
     );
 }

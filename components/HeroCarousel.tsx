@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { TmdbResult } from '@/lib/tmdb';
+import { MagneticButton } from './MagneticButton';
 
 export function HeroCarousel({ items, genreMap }: { items: TmdbResult[], genreMap: Record<number, string> }) {
     const [current, setCurrent] = useState(0);
@@ -72,44 +73,66 @@ export function HeroCarousel({ items, genreMap }: { items: TmdbResult[], genreMa
             {/* Mesh blend at bottom */}
             <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-surface to-transparent" />
 
-            {/* Content */}
-            <div className="absolute inset-0 flex items-end pb-32 z-10">
-                <div className="max-w-7xl mx-auto px-6 sm:px-10 w-full">
+            {/* Content & Top Bar */}
+            <div className="absolute inset-0 z-10">
+                {/* Mobile Top App Bar (Hidden on Desktop, as Desktop has Navbar) */}
+                <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-6 pt-4 pb-2 md:hidden bg-gradient-to-b from-black/80 to-transparent z-20">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amethyst to-amethyst-dark flex items-center justify-center shadow-lg">
+                        <span className="text-white font-black text-xs">B</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <Link href="/search" className="text-white">
+                            <svg className="w-6 h-6 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                        </Link>
+                        <Link href="/profile" className="text-white">
+                            <svg className="w-6 h-6 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                        </Link>
+                    </div>
+                </div>
+
+                <div className="absolute inset-x-0 bottom-0 px-6 sm:px-10 pb-32 md:pb-32 flex justify-center md:justify-start">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={current}
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
-                            className="max-w-2xl"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.8, ease: "easeInOut" }}
+                            className="max-w-2xl w-full flex flex-col items-center text-center md:items-start md:text-left origin-bottom-center md:origin-bottom-left"
                         >
-                            {/* Genre Pills */}
-                            <div className="flex flex-wrap gap-2 mb-4">
-                                {genres.map(g => (
-                                    <span key={g} className="glass-pill bg-amethyst/15 text-amethyst-light border-amethyst/30 text-[10px]">{g}</span>
-                                ))}
-                                {year && <span className="glass-pill text-white/50 text-[10px]">{year}</span>}
-                            </div>
-
                             {/* Title */}
-                            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-white leading-[0.95] tracking-tight mb-4">
+                            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-black text-white leading-[0.95] tracking-tight mb-2 drop-shadow-xl text-balance">
                                 {title}
                             </h1>
 
-                            {/* Overview */}
+                            {/* Metadata / Genres */}
+                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-6">
+                                {year && <span className="text-sm font-bold text-white drop-shadow-md">{year}</span>}
+                                {genres.length > 0 && <span className="w-1.5 h-1.5 rounded-full bg-white/50" />}
+                                {genres.map((g, idx) => (
+                                    <div key={g} className="flex items-center gap-2">
+                                        <span className="text-sm font-medium text-white/90 drop-shadow-md">{g}</span>
+                                        {idx < genres.length - 1 && <span className="w-1 h-1 rounded-full bg-white/30" />}
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Overview (Hidden on small mobile screens to keep it clean like inspiration, visible on md+) */}
                             {overview && (
-                                <p className="text-sm text-white/50 leading-relaxed max-w-lg line-clamp-2 mb-6 font-medium">
+                                <p className="hidden md:block text-sm text-white/70 leading-relaxed max-w-lg line-clamp-2 mb-8 font-medium">
                                     {overview}
                                 </p>
                             )}
 
-                            {/* CTA */}
-                            <div className="flex items-center gap-3">
-                                <Link href={href} className="glass-btn glass-btn-primary rounded-full px-6 py-3 text-xs font-bold tracking-wider inline-flex items-center gap-2">
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                    View Details
+                            {/* CTAs */}
+                            <div className="flex items-center gap-3 w-full justify-center md:justify-start">
+                                <Link href={href} className="flex-1 md:flex-none max-w-[200px] md:max-w-none bg-rose hover:bg-rose-dark active:scale-95 text-white rounded-full px-6 py-3.5 md:py-3 text-sm font-bold tracking-wide flex items-center justify-center gap-2 transition-all shadow-[0_4px_20px_rgba(244,63,94,0.4)] md:bg-white/10 md:hover:bg-white/20 md:backdrop-blur-md md:shadow-none">
+                                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    Play Trailer
                                 </Link>
+                                <button className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md text-white border border-white/20 active:scale-95 transition-transform md:hidden">
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/></svg>
+                                </button>
                             </div>
                         </motion.div>
                     </AnimatePresence>
@@ -117,7 +140,7 @@ export function HeroCarousel({ items, genreMap }: { items: TmdbResult[], genreMa
             </div>
 
             {/* Indicator Pills */}
-            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+            <div className="absolute bottom-6 md:bottom-12 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
                 {items.map((_, idx) => (
                     <button
                         key={idx}
